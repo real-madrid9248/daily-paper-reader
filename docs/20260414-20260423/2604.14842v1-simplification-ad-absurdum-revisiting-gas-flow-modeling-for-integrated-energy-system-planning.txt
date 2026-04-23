@@ -1,0 +1,620 @@
+Title: Simplification Ad Absurdum? Revisiting Gas Flow Modeling for Integrated Energy System Planning
+
+URL Source: https://arxiv.org/pdf/2604.14842v1
+
+Published Time: Fri, 17 Apr 2026 00:58:52 GMT
+
+Number of Pages: 5
+
+Markdown Content:
+# Simplification Ad Absurdum? Revisiting Gas Flow Modeling for Integrated Energy System Planning 
+
+Thomas Klatzer, Yannick Werner, Sonja Wogrin 
+
+Institute of Electricity Economics and Energy Innovation Research Center for Energy Economics and Energy Analytics Graz University of Technology 
+
+Graz, Austria 
+
+{thomas.klatzer, yannick.werner, wogrin }@tugraz.at 
+
+Abstract —This paper analyzes the implications of simplified pipeline gas flow models for integrated energy system planning. A case study of an integrated power–hydrogen expansion planning problem shows that simplifying pressure–flow relationships and gas dynamics can lead to expansion plans that incur substantial regret when evaluated under a more realistic dynamic gas flow model – due to suboptimal system expansion, operation, and non-supplied hydrogen. Numerical experiments show that planning under the highly simplified transport and transport-linepack models – commonly used in expansion studies – can result in regret exceeding several thousand percent and yield expansion plans that lack robustness across demand levels. Planning under steady-state conditions partially mitigates these effects, but still leaves significant cost-reduction potential untapped compared to dynamic planning due to neglected linepack flexibility. Developing efficient solution algorithms for the dynamic model is a promising direction for future research. 
+
+Index Terms —Hydrogen, linepack, nonlinear optimization, pipeline expansion planning, transport model 
+
+I. I NTRODUCTION 
+
+The transition towards decarbonized energy systems in-creasingly emphasizes integrated planning of the power and gas sectors [1] to support large-scale production of renew-able hydrogen [2] and transmission via pipelines [3]. Plan-ning of the underlying power–gas infrastructure is commonly supported by integrated energy system optimization models (ESOMs). Within ESOMs, modeling pipeline gas flows is particularly challenging, as gas transport is governed by non-linear and non-convex pressure–flow relationships and slow dynamics that enable short-term storage via linepack [4]. Against this background, pipeline expansion planning – traditionally addressed by the gas systems community – has received increasing attention in the power systems community. Due to differing objectives, however, the problem is treated differently across the two fields. The gas systems community typically focuses on optimal network design and does not explicitly consider coupled decisions on gas production or storage, e.g., [5]–[7]. Here, steady-state gas flow models are state-of-the-art for expansion planning, while dynamic models are used for operational control [8], [9]. In contrast, the power systems community focuses on integrated expansion 
+
+This work is part of the project iKlimEt (FO999910627), which has received funding in the framework of ”Energieforschung”, a research and technology program of the Klima- und Energiefonds. 
+
+of generation, storage, and transmission across power and gas sectors. Gas flow modeling ranges from dynamic [10], to steady-state [11], to highly simplified transport models that approximate linepack [12], [13], or omit it entirely [14], [15]. Due to its computational efficiency, the latter is commonly used in ESOMs such as PyPSA [16] and LEGO [17]. Systematic comparisons of modeling approaches across different levels of gas flow representation in expansion plan-ning remain scarce. One notable exception is [18], which analyzes pipeline expansion and hydrogen reconversion in a star- and tree-shaped network under a discrete arc-sizing model, comparing steady-state and transport formulations. However, the study relies on exogenous assumptions for power generation and hydrogen production capacities and does not consider dynamic gas flow representations. Overall, a comprehensive comparison of gas flow modeling choices for expansion planning and a systematic evaluation of commonly used simplifications are missing. In this work, we address this gap by analyzing the implications of considering (or omitting) technical gas flow characteristics on the integrated expansion of renewable-powered electrolyzers and hydrogen transmission pipelines. Specifically, our contributions are twofold: (1) We compile and harmonize a range of pipeline gas flow models within a single modeling framework, enabling straight-forward comparison across different levels of technical detail – from a dynamic model that captures nonlinear pressure–flow relationships and slow gas dynamics (linepack) to a highly simplified transport model. (2) We conduct in-depth analyses of expansion outcomes for a stylized yet realistic power-hydrogen system and illustrate the implications of planning decision obtained from simplified gas flow models across demand levels when validated under dynamic conditions. The remainder of the paper is organized as follows: Sec-tion II details the hydrogen expansion planning problem, subject to different gas flow modeling choices. In Section III, the numerical experiments and results are presented. Finally, Section IV concludes the paper. II. M ETHODOLOGY 
+
+This section presents the methodology: Subsection II-A introduces the hydrogen expansion planning problem, Subsec-
+
+> arXiv:2604.14842v1 [eess.SY] 16 Apr 2026
+
+tion II-B the gas flow prerequisites, and Subsections II-C–II-F the gas flow modeling choices for pipeline expansion planning. 
+
+A. Hydrogen Expansion Planning Problem 
+
+We formulate the hydrogen expansion planning (HEP) problem assuming the perspective of a central planner whose objective is to minimize the total annualized investment and operating cost for hydrogen production and transmission via pipelines over one year. Let T , I, E, A, D, and C denote the sets of time steps, nodes, electrolyzers, pipelines, pipeline diameters, and com-pressors, indexed by t, i, e, a, d, and c, respectively, where the cardinality of T is denoted by |T | . Pipelines and compressors connect node pairs i, j ∈ I , such that A, C ⊆ I×I . Electrolyz-ers are assigned to nodes using the mapping set M ⊆ E × I ,where (e, i ) ∈ M if electrolyzer e is located at node i. Let 
+
+xe denote the number of installed electrolyzers, pH 
+
+> t,e
+
+their hydrogen production ( t/h), and pNs  
+
+> t,i
+
+the non-supplied hydrogen (t/h). Pipeline expansion with diameter d is represented by 
+
+xa,d . Pipeline inflows and outflows ( t/h) are denoted by f In 
+
+> t,a
+
+and f Out  
+
+> t,a
+
+, respectively, with the corresponding average gas flow given by ft,a . Compressor inflows and outflows ( t/h)are denoted by f In  
+
+> t,c
+
+and f Out  
+
+> t,c
+
+. Electrolyzer capacity ( MW )is given by the time-variant parameter P E
+
+> t,e
+
+, reflecting the availability of renewable electricity, ηe denotes the hydrogen-per-electricity conversion efficiency, and Xe the maximum number of electrolyzers. Hydrogen demand ( t/h) is denoted by DH
+
+> t,i
+
+. Annualized investment costs are denoted by CInv 
+
+> e
+
+for electrolzyers ( e) and CInv  
+
+> a,d
+
+for pipeline expansion ( e)with diameter d. Operating costs comprise electricity costs (e/MWh ) for hydrogen production CE 
+
+> t,e
+
+and a penalty ( e/t)for non-supplied hydrogen CNs . Finally, ∆ denotes the time resolution ( h). The HEP problem is formulated as follows: 
+
+min X
+
+> e∈E
+
+CInv  
+
+> e
+
+xe + X
+
+> a∈A
+
+X
+
+> d∈D
+
+CInv  
+
+> a,d
+
+xa,d 
+
++ 8760 ∆ · |T | 
+
+X
+
+> t∈T
+
+∆
+
+ X 
+
+> e∈E
+
+CE
+
+> t,e
+
+pH
+
+> t,e
+
+/η e + X
+
+> i∈I
+
+CNs pNs 
+
+> t,i
+
+
+
+(1a) s.t. X
+
+> a(j,i )∈A
+
+f In  
+
+> t,a
+
+− X
+
+> a(i,j )∈A
+
+f Out  
+
+> t,a
+
++ X
+
+> c(j,i )∈C
+
+f In 
+
+> t,c
+
+− X
+
+> c(i,j )∈C
+
+f Out  
+
+> t,c
+
++ X
+
+> e:( e,i )∈M
+
+pH 
+
+> t,e
+
++ pNs  
+
+> t,i
+
+= DH 
+
+> t,i
+
+∀t, i 
+
+(1b) 
+
+0 ≤ pH 
+
+> t,e
+
+≤ ηeP E
+
+> t,e
+
+xe ∀t, e (1c) 
+
+0 ≤ xe ≤ Xe ∀e (1d) 
+
+xa,d ∈ { 0, 1} ∀a, d (1e) 
+
+X
+
+> d∈D
+
+xa,d = 1 ∀a (1f) gas flow modeling choice (3) ∨ (4) ∨ (5a) ∨ (6) (1g) For the HEP problem (1), the objective function is given by (1a). Constraint (1b) enforces the hydrogen balance, while (1c) limits hydrogen production from electrolyzers to their expanded capacity. The number of installed electrolyzers is constrained by (1d). Pipeline expansion is modeled as a bi-nary decision variable (1e), with at most one diameter selected per pipeline (1f). Gas transmission (1g) in the HEP problem can be modeled at different levels of physical detail and dynamics, which are introduced in the following Subsections, starting with the prerequisites for gas flow modeling. 
+
+B. Gas Flow Modeling Prerequisites 
+
+Following standard assumptions in the literature, e.g., [8], [9], gas flow in ESOMs is modeled assuming horizontal isothermal pipelines using a system of nonlinear partial dif-ferential equations (PDEs) describing conservation of momen-tum (2a) and mass (2b), 
+
+∂p ∂x + c2λ
+
+2DA 2
+
+f |f |
+
+p = 0 , (2a) 
+
+∂p ∂t Ac2 + ∂f ∂x = 0 , (2b) where x and t denote space and time, and the unknowns are the gas flow f (kg /s) and gas pressure p (bar ). The parameters D
+
+(m) and A (m2) represent the pipeline diameter and cylindrical cross section, while c deontes the speed of sound, which we define as c = 1320 m /s for hydrogen. The friction factor λ
+
+captures friction-induced pressure losses in pipeline gas flow and is commonly approximated using the Nikuradse formula. Finally, | · | denotes the absolute value. For use in ESOMs, the PDEs are discretized in space and time using the pipeline length L (m) and the time resolution 
+
+∆ as the spatial and temporal step sizes, respectively. 
+
+C. Dynamic Model 
+
+The resulting discretized PDEs define the dynamic model. Let πt,i denote the gas pressure ( bar ) at node i ∈ I . For compactness, the parameters Ra,d = 16 c2Laλd
+
+> π2D5
+> a,d
+
+and Ha,d =
+
+> 8c2
+> πL aD2
+> a,d
+
+condense pipeline characteristics, where La, Da,d ,and λd denote the pipeline length ( m), diameter ( m), and corresponding friction factor, respectively, while c and π are constants. Moreover, Πi and Πi represent the minimum and maximum nodal gas pressure ( bar ), respectively, and Γc is the compression ratio of compressor c. The dynamic model 
+
+is formulated as: 
+
+ π2 
+
+> t,i
+
+− π2
+
+> t,j
+
+ = X
+
+> d∈D
+
+Ra,d xa,d ft,a |ft,a | ∀t, a (3a) 
+
+ft,a = 12
+
+
+
+f In  
+
+> t,a
+
++ f Out 
+
+> t,a
+
+
+
+∀t, a (3b) 
+
+πt,i + πt,j = πt−1,i + πt−1,j 
+
++ ∆ X
+
+> d∈D
+
+Ha,d xa,d 
+
+
+
+f In  
+
+> t,a
+
+− f Out 
+
+> t,a
+
+
+
+∀ t ∈ T \{ 1}, a (3c) 
+
+πt,i + πt,j = πT,i + πT,j 
+
++ ∆ X
+
+> d∈D
+
+Ha,d xa,d 
+
+
+
+f In  
+
+> t,a
+
+− f Out 
+
+> t,a
+
+
+
+∀ t ∈ { 1}, a (3d) 
+
+πt,j = Γ cπt,i ∀t, c (3e) 
+
+Πi ≤ πt,i ≤ Πi ∀t, i (3f) In (3), constraint (3a) represents the momentum equation governing bidirectional gas flow, defined as the average of inflow and outflow in (3b). Constraint (3c) enforces mass conservation across consecutive time steps, thereby captur-ing a pipeline’s short-term storage capability via linepack, while (3d) cyclically links the final and first time step. Con-straint (3e) describes pressure increases from compressors, and (3f) imposes lower and upper bounds on nodal pressures. The dynamic model constitutes a mixed-integer nonlinear pro-gram (MINLP) with time-linking constraints and is the most computationally demanding among the models considered. 
+
+D. Steady-state Model 
+
+The dynamic model (3) can be simplified by assuming stationary gas flow, i.e., inflow equals outflow. Consequently, the mass balance constraints (3c) and (3d) are omitted. In this setting, pressure variables are expressed as squared nodal gas pressure ( bar 2), denoted by πSqr  
+
+> t,i
+
+, with corresponding bounds 
+
+ΠSqr and ΠSqr . The steady-state model is formulated as: 
+
+ πSqr  
+
+> t,i
+
+− πSqr 
+
+> t,j
+
+ = X
+
+> d∈D
+
+Ra,d xa,d ft,a |ft,a | ∀t, a (4a) 
+
+f In  
+
+> t,a
+
+= f Out  
+
+> t,a
+
+= ft,a ∀t, a (4b) 
+
+πSqr  
+
+> t,j
+
+= Γ 2 
+
+> c
+
+πSqr  
+
+> t,i
+
+∀t, c (4c) 
+
+ΠSqr  
+
+> i
+
+≤ πSqr  
+
+> t,i
+
+≤ ΠSqr  
+
+> i
+
+∀t, i (4d) In (4), constraint (4a) represents the momentum equation governing bidirectional gas flow, with inflow equal to out-flow (4b). Constraint (4c) defines the pressure increase from compressors, while (4d) imposes lower and upper bounds on nodal pressures. The steady-state model constitutes a MINLP. 
+
+E. Transport Model 
+
+The steady-state model (4) can be approximated as a trans-port model by omitting the explicit pressure–flow relationship and bounding gas flows by F a,d =
+
+q Πa 
+
+> Ra,d La
+
+, corresponding to the maximum flow implied by the maximum pressure Πa
+
+of pipeline a. The transport model is formulated as: 
+
+− X
+
+> d∈D
+
+F a,d xa,d ≤ f In 
+
+> t,a
+
+, f Out  
+
+> t,a
+
+≤ X
+
+> d∈D
+
+F a,d xa,d ∀t, a (5a) 
+
+f In  
+
+> t,a
+
+= f Out  
+
+> t,a
+
+∀t, a (5b) In (5), constraints (5a) limit bidirectional inflow and outflow, while (5b) enforces their equality. The transport problem constitutes a mixed-integer linear program (MILP). 
+
+F. Transport Model with Linepack Approximation 
+
+The transport model (5) can be extended to approximate linepack storage. Let mt,a denote the gas stored in pipeline 
+
+a at time t. The minimum and maximum linepack are given by M a,d = πL aΠaD2 
+
+> a,d
+> 4c2
+
+and M a,d = πL aΠaD2 
+
+> a,d
+> 4c2
+
+, where Πa
+
+and Πa denote the minimum and maximum pipeline pressures (bar ). The transport-linepack model is formulated as: 
+
+−X
+
+> d∈D
+
+F a,d xa,d ≤ f In 
+
+> t,a
+
+, f Out  
+
+> t,a
+
+≤X
+
+> d∈D
+
+F a,d xa,d ∀t, a (6a) 
+
+mt,a = mt−1,a + ∆  f In  
+
+> t,a
+
+− f Out 
+
+> t,a
+
+ ∀ t ∈ T \{ 1}, a (6b) 
+
+mt,a = mT,a + ∆  f In  
+
+> t,a
+
+− f Out 
+
+> t,a
+
+ t ∈ { 1}, ∀ a (6c) 
+
+X
+
+> d∈D
+
+M a,d xa,d ≤ mt,a ≤ X
+
+> d∈D
+
+M a,d xa,d ∀t, a (6d) In (6), constraints (6a) limit the bidirectional gas in-flow and outflow. Constraint (6b) enforces mass conservation across consecutive time steps, thereby approximating pipeline linepack, while (6c) cyclically links the final and first time step, and (6d) imposes lower and upper bounds on linepack. The transport-linepack model constitutes a MILP with time-linking constraints. In the following section, we solve the HEP problem and show how gas flow modeling choices affect model outcomes. III. N UMERICAL EXPERIMENTS 
+
+This section presents numerical results for the HEP prob-lem (1). We first describe the case study setup. Subsec-tion III-A then analyzes planning outcomes under different gas flow modeling choices across hydrogen demand levels, followed by validation under dynamic operation in III-B. The hydrogen network topology for the case study is based on a modified version of the GasLib 11-node gas network [19], shown in Fig. 1. All pipelines have a length 
+
+La of 60 km . Candidate pipeline diameters ( m) are Da,d =
+
+{0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.4}, with investment costs adopted from [18] and annualized over a 40-year lifetime. The minimum and maximum system pressures are 40 bar and 
+
+70 bar , respectively, and the compressor ratio is Γc = 1 .4.Hydrogen production is represented by 100 MW proton exchange membrane electrolyzers (PEMEL) directly coupled with renewable generation, with P Et,e representing the time-dependent available capacity of the electrolyzers due to renew-able generation. The maximum number of installable PEMEL units, Xe, is limited to 800 wind-coupled units at node i1 and 
+
+2000 solar-coupled units at node i8 with associated annualized investment costs, CInv  
+
+> e
+
+, of 3 M e per 100 -MW plant [20]. The electrolyzers convert electricity to hydrogen with an efficiency of ηe = 18 .2 kg /MWh . The electricity cost, CE
+
+> t,e
+
+, is 2.5 for wind and 1 e/MWh for solar generation. Finally, the cost of non-supplied hydrogen, Cns , is assumed as 100 e/kg .Time series for P Et,e are calculated from normalized renew-able generation from [21]. Hydrogen demands, DHt,i , located at nodes i7, i10 and i11 , are derived from normalized industrial gas demand data from [22] and scaled to the test system. Due to the computational complexity of the HEP problem, the test cases consider a single representative day with hourly resolution, i.e., ∆ = 1 h , to represent annual system operation. All models were solved in GAMS 52.5.0 on an Intel Core i9 workstation with 128 GB of RAM using an optimality gap of 1 × 10 −6. Depending on the computational complexity i1 i2 i3
+
+i4
+
+i5
+
+i6
+
+i7
+
+i8
+
+i9
+
+i10 
+
+i11              
+
+> Pipeline
+> Injection node
+> Withdrawal node
+> Transshipment node
+> Compressor
+> Fig. 1. Hydrogen system based on GasLib-11 network topology.
+> 0
+> 1,000
+> 2,000
+> Electrolyzer investment cost ( Me)
+> Dynamic Steady-state Transport Transport Linepack
+> 0
+> 10
+> 20
+> 30
+> 40
+> Pipeline investment cost ( Me)
+> 0.20.611.41.82.22.633.43.8
+> 0
+> 0.2
+> 0.4
+> 0.6
+> Hydrogen demand ( Mt )
+> Non-supplied hydrogen ( Mt )
+> Fig. 2. Electrolyzer and pipeline investment costs and non-supplied hydrogen under considered gas flow modeling choices across hydrogen demand levels.
+
+of the HEP problem arising from the gas flow formulation, different solvers were employed. SCIP 9.2.4 was used to solve expansion planning instances under the steady-state, transport, and transport-linepack models, as well as operational instances of the dynamic model (fixed investments), to global optimality. For expansion planning instances with the dynamic model, locally optimal solutions were obtained using DICOPT 2 with Gurobi 13.0.0 (MIP) and CONOPT 4.39 (NLP). 
+
+A. Planning under Different Gas Flow Modeling Choices 
+
+We solve expansion planning instances of the HEP problem under different gas flow modeling choices. Fig. 2 reports elec-trolyzer and pipeline investment costs ( Me) and non-supplied hydrogen ( Mt ) across demand levels, while Fig. 3 shows the corresponding pipeline expansions for selected instances. For electrolyzer investments, the dynamic and transport-linepack models consistently yield lower costs than the steady-state and transport models. This reflects the operational flex-ibility provided by linepack, which enables expansion at locations with favorable hydrogen production conditions (i.e., renewable electricity availability and cost). The steady-state and transport models yield identical electrolyzer expansion. Pipeline expansion varies across gas flow modeling choices. Pipeline investment costs under the steady-state model exceed those of the transport model across all demand levels, as expected due to its explicit representation of pressure–flow relationships. At high demand levels, the transport-linepack              
+
+> Diameter 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.4
+> 1 Mt 2 Mt 3 Mt 4 Mt
+> Dynamic
+> Steady-state
+> Transport
+> Transport Linepack
+> Fig. 3. Expanded pipeline diameters under considered gas flow modeling choices and hydrogen demand levels.
+
+model favors larger pipeline diameters – reaching the max-imum expandable diameter due to its approximate represen-tation – an effect that is significantly less pronounced in the dynamic model for the considered demand levels (see Fig. 3). Importantly, from a demand of 1.8 Mt , the steady-state and transport models begin to incur non-supplied hydrogen, whereas this occurs only beyond 3.8 Mt in the transport-linepack model; the dynamic model maintains zero non-supplied hydrogen across all instances. These results clearly show the immense value of incorporating linepack flexibility in expansion planning models. 
+
+B. Validation of Simplified Planning Decisions 
+
+We assess the quality of planning decisions obtained from the simplified models in Subsection III-A when operated under the dynamic model using regret. To this end, let JS(·)
+
+and JD(·) denote the objective values of the simplified and dynamic models, respectively. Let zop and zinv denote opera-tional and investment decisions, and let ˆzinv be the optimal investments of a simplified model. The optimal objective values are defined as 
+
+JS,∗ = min 
+
+> zop ,z inv
+
+JS(zop , z inv ),JD,∗(ˆ zinv ) = min  
+
+> zop
+
+JD(zop , ˆzinv ),JD,∗ = min 
+
+> zop ,z inv
+
+JD(zop , z inv ), (7) and the relative regret is defined as 
+
+Regret = JD,∗(ˆ zinv ) − JD,∗
+
+JD,∗ . (8) Fig. 4 shows regret ( %) and non-supplied hydrogen ( Mt )resulting from planning under simplified gas flow models and subsequent operation under the more realistic dynamic model. The results demonstrate that approximating pressure-flow relationships in the transport and transport-linepack mod-els constitutes a clear over-simplification of physical gas flow, leading to suboptimal system expansion that cannot be compensated by linepack flexibility in the dynamic model. Notably, the transport-linepack model overestimates linepack flexibility, yielding instances with near-zero regret – par-ticularly at low demand levels – while also exhibiting the 0            
+
+> 2,000
+> 4,000
+> Regret (%)
+> Dynamic Steady-state Transport Transport Linepack
+> 0
+> 50
+> 100
+> 150
+> (zoomed view)
+> 0.20.611.41.82.22.633.43.8
+> 0
+> 0.1
+> 0.2
+> 0.3
+> Hydrogen demand ( Mt )
+> Non-supplied hydrogen ( Mt )
+
+Fig. 4. Regret from planning under simplified gas flow models under dynamic operation (top), with a zoomed view (middle), and non-supplied hydrogen (bottom), across hydrogen demand levels. 
+
+maximum regret ( 4875 % ) across all instances. Importantly, planning under these simplified models does not yield robust expansion plans, as instances without non-supplied hydrogen in planning may incur it in operation, and vice versa. Planning under the steady-state model does not achieve zero regret in any instance. However, this regret primarily stems from suboptimal investment and operational decisions rather than non-supplied hydrogen (except for the 3.8 Mt instance, where 
+
+1 kt of demand is unmet). Overall, the steady-state model yields more consistent regret across demand levels, with a maximum of 129 % , indicating more robust expansion plans. Still, its average regret of 56 % implies significant untapped cost-reduction potential in system planning. IV. C ONCLUSIONS 
+
+This paper analyzes the implications of simplified pipeline gas flow models for integrated energy system planning, as commonly used in the power systems community. We for-mulate a power–hydrogen expansion planning model with gas flows represented by steady-state, transport, and transport models with linepack, and evaluate the resulting planning decisions under a more realistic dynamic model. Our results show that planning under the transport and transport-linepack models can yield expansion plans with sig-nificant non-supplied hydrogen due to the over-simplification of gas flow physics and, importantly, lack of robustness across demand levels. In our case study, the steady-state model avoids non-supplied hydrogen in all but one instance. However, it still incurs substantial regret due to suboptimal investment and operation, averaging 56 % relative to the dynamic model. While computationally demanding, the steady-state model offers a favorable trade-off between accuracy and tractability among the considered approaches. Overall, this work provides insights for the power systems modeling community to reconsider the default use of over-simplified transport and transport-linepack models and instead adopt more realistic steady-state formulations, which are state-of-the-art in the gas systems community for network plan-ning. Although highly promising for integrated energy system planning, the dynamic model remains computationally highly demanding even for relatively small instances. Future work should therefore focus on developing computationally efficient solution algorithms for the dynamic model to accurately capture gas dynamics in expansion planning problems. REFERENCES [1] European Commission, “Powering a climate-neutral economy: An EU Strategy for Energy System Integration,” 2020. [Online]. Available: https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=COM: 2020:299:FIN [2] ——, “Commission Delegated Regulation (EU) 2023/1184 of 10 Febru-ary 2023,” http://data.europa.eu/eli/reg del/2023/1184/oj, 2023. [3] European Hydrogen Backbone Initiative, “EHB initiative to provide insights on infrastructure development by 2030,” Tech. Rep., 2023. [4] E. Raheli, Y. Werner, and J. Kazempour, “Flexibility of Integrated Power and Gas Systems: Modeling and Solution Choices Matter,” IEEE Trans. Power Syst. , vol. 40, no. 3, pp. 2130–2142, May 2025. [5] J. Andr´ e et al. , “Design and dimensioning of hydrogen transmission pipeline networks,” Eur. J. Oper. Res. , vol. 229, no. 1, pp. 239–251, 2013. [6] S. Baufum´ e et al. , “GIS-based scenario calculations for a nationwide German hydrogen pipeline infrastructure,” Int. J. Hydrogen Energy ,vol. 38, no. 10, pp. 3813–3829, 2013. [7] C. Borraz-S´ anchez, R. Bent, S. Backhaus, H. Hijazi, and P. Van Hen-tenryck, “Convex relaxations for gas expansion planning,” INFORMS J. Comput. , vol. 28, no. 4, pp. 645–656, 2016. [8] T. Koch, B. Hiller, M. E. Pfetsch, and L. Schewe, Evaluating Gas Network Capacities . Philadelphia, PA: Society for Industrial and Applied Mathematics, 2015. [9] R. Lenz, “Optimization of Stationary Expansion Planning and Transient Network Control by Mixed-Integer Nonlinear Programming,” Disserta-tion, Technische Universit¨ at Berlin, 2021. [10] Q. Zeng, B. Zhang, J. Fang, and Z. Chen, “A bi-level programming for multistage co-expansion planning of the integrated gas and electricity system,” Appl. Energy , vol. 200, pp. 192–203, Aug 2017. [11] C. B. Sanchez, R. Bent, S. Backhaus, S. Blumsack, H. Hijazi, and P. van Hentenryck, “Convex Optimization for Joint Expansion Planning of Natural Gas and Power Systems,” in 2016 49th Hawaii Int. Conf. System Sciences (HICSS) , Hawaii, USA, 2016. [12] E. F. Bødal et al. , “Hydrogen for harvesting the potential of offshore wind: A North Sea case study,” Appl. Energy , vol. 357, no. May 2023, p. 122484, 2024. [13] G. He, D. S. Mallapragada, A. Bose, C. F. Heuberger, and E. Gencer, “Hydrogen Supply Chain Planning With Flexible Transmission and Storage Scheduling,” IEEE Trans. Sustainable Enery , vol. 12, no. 3, pp. 1730–1740, Jul 2021. [14] B. Zhao, A. J. Conejo, and R. Sioshansi, “Coordinated Expansion Planning of Natural Gas and Electric Power Systems,” IEEE Trans. Power Syst. , vol. 33, no. 3, pp. 3064–3075, May 2018. [15] F. Neumann, E. Zeyen, M. Victoria, and T. Brown, “The potential role of a hydrogen network in europe,” Joule , vol. 7, pp. 1–25, 2023. [16] T. Brown, J. H¨ orsch, and D. Schlachtberger, “PyPSA: Python for Power System Analysis,” J. Open Res. Softw. , vol. 6, no. 1, p. 4, 2018. [17] S. Wogrin, D. A. Tejada-Arango, R. Gaugl, T. Klatzer, and U. Bachhiesl, “LEGO: The open-source Low-carbon Expansion Generation Optimiza-tion model,” SoftwareX , vol. 19, p. 101141, 2022. [18] M. Reuß et al. , “Modeling hydrogen networks for future energy systems: A comparison of linear and nonlinear approaches,” Int. J. Hydrogen Energy , vol. 44, no. 60, pp. 32 136–32 150, 2019. [19] M. Schmidt et al. , “GasLib—A library of gas network instances,” Data ,vol. 2, no. 4, pp. 1–18, 2017. [20] A. H. Reksten, M. S. Thomassen, S. Møller-Holst, and K. Sundseth, “Projecting the future cost of PEM and alkaline water electrolysers; a CAPEX model including electrolyser plant size and technology development,” Int. J. Hydrogen Energy , vol. 47, no. 90, pp. 38 106– 38 113, 2022. [21] Red El´ ectrica de Espa˜ na, “CO2-free Generation,” 2026. [Online]. Available: https://www.esios.ree.es/en/analysis [22] National Gas Transmission, “Industrial Demand,” 2026. [Online]. Available: https://data.nationalgas.com/reports/customisable-downloads

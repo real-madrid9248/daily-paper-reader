@@ -1,0 +1,1661 @@
+Title: Heat Transfer Modeling in Enhanced Geothermal Energy: A Three-Temperature Approach for Solid, Injected, and Residing Fluids
+
+URL Source: https://arxiv.org/pdf/2604.20710v1
+
+Published Time: Thu, 23 Apr 2026 01:18:10 GMT
+
+Number of Pages: 30
+
+Markdown Content:
+# Heat Transfer Modeling in Enhanced Geothermal Energy: A Three-Temperature Approach for Solid, Injected, and Residing Fluids 
+
+Yi-Yung Yang a, Sanghyun Lee a, Dmitri Kuzmin b
+
+> aDepartment of Mathematics, Florida State University, 1017 Academic Way, Tallahassee, 32306-4510, FL, USA
+> bInstitute of Applied Mathematics, TU Dortmund University, Vogelpothsweg 87, Dortmund, D-44227, Germany
+
+Abstract 
+
+Enhanced geothermal systems (EGS) are governed by strongly coupled, advection-dominated flow and heat transfer in fractured porous media. Conventional models typically assume local thermal equilibrium with a single e ff ective fluid temperature or, at best, an averaged pore-fluid temperature, so that the thermal evolution of the injected cold fluid is only inferred indirectly. In this work, we develop a new local thermal non-equilibrium (LTNE) formulation that explicitly resolves the temperature of injected fluid as it travels through the reservoir and exchanges heat with the hot rock and resident fluid. The key modeling ingredient is a concentration variable that tracks the injected fluid and drives a three-way LTNE coupling: rock temperature, resident-fluid temperature, and injected-fluid temperature. This allows us to distinguish, at the continuum level, how newly injected fluid parcels are heated by conductive and convective exchange, and to predict injected-fluid temperature at production wells without relying on bulk averages. To discretize the resulting nonlinear, advection-dominated system, we employ an enriched Galerkin (EG) finite element method for Darcy flow, temperature, and concentration, ensuring local mass conservation with a moderate number of degrees of freedom. A tailored flux-corrected trans-port (FCT) strategy is constructed for the EG discretization of the concentration and temperature equations to enforce a discrete maximum principle and suppress nonphysical oscillations while preserving local conservation. Time integration is carried out with an IMPES-type splitting com-bined with a strong-stability-preserving third-order Runge–Kutta (SSP RK2) scheme. Numerical experiments for fractured EGS configurations demonstrate that the proposed LTNE–EG–FCT framework can resolve injected-fluid heating paths and thermal breakthrough behavior that are not captured by standard single-temperature or averaged LTNE models. 
+
+Keywords: 
+
+Enhanced geothermal, flux corrected transport, enriched Galerkin finite element methods, local thermal non-equilibrium 
+
+1. Introduction 
+
+Enhanced geothermal systems (EGS) [1, 2] extract heat from deep, low-permeability rock formations by injecting a relatively cold working fluid, circulating it through a fractured porous medium, and producing it at elevated temperatures. The e ffi ciency and long-term viability of EGS operations are governed by strongly coupled fluid flow and heat transfer processes in highly  
+
+> Preprint submitted to Elsevier April 23, 2026
+> arXiv:2604.20710v1 [math.NA] 22 Apr 2026
+
+heterogeneous media, frequently operating in an advection-dominated regime [3]. Accurately resolving how injected cold fluid exchanges heat with the hot rock matrix and resident pore fluid is essential for predicting thermal breakthrough, reservoir lifetime, and power output. Most geothermal reservoir simulators rely on the local thermal equilibrium (LTE) assump-tion [4], in which a single e ff ective temperature represents the combined rock–fluid system. Even when local thermal nonequilibrium (LTNE) [5, 6] models are employed, they typically introduce separate temperatures for the solid and fluid phases while still treating the pore fluid as a single averaged component. Consequently, the thermal evolution of injected cold fluid is not explicitly resolved; instead, predictions rely on averaged temperatures within the porous medium. This averaging obscures the detailed heating dynamics of newly injected fluid parcels and limits the ability to resolve multiscale phenomena such as fracture [7, 8, 9] channeling, fingering instabili-ties, and localized heat-exchange hot spots. To address this limitation, we develop a three-way local thermal nonequilibrium (three-way LTNE) framework that distinguishes among injected fluid, resident fluid, and solid matrix tem-peratures. The governing system couples Darcy flow for a single-phase fluid with separate energy equations for the injected fluid, resident fluid, and rock matrix, and incorporates a concentration equation to track injected-fluid transport. This formulation enables explicit tracking of injected-fluid heating along flow paths, thereby resolving thermal processes that are only indirectly rep-resented in conventional LTE or two-temperature LTNE models. The resulting system is strongly coupled and advection dominated, posing significant chal-lenges for numerical discretization. To obtain physically consistent and locally conservative solutions, we employ an enriched Galerkin (EG) finite element method for both the Darcy flow and transport equations [10, 11, 12, 13, 14]. The EG formulation ensures elementwise mass con-servation while maintaining a relatively low number of degrees of freedom, making it suitable for large-scale geothermal simulations. For temporal coupling, we adopt a modified IMPES-type se-quential scheme [15, 16, 17] in which pressure and velocity are treated implicitly, concentration is advanced explicitly, and temperatures are solved implicitly. To stabilize the advective terms in the transport equation for the concentration and enforce a discrete maximum principle, we incorpo-rate a flux-corrected transport (FCT) strategy [18, 10, 19]. Time integration of the concentration equation is performed using a strong-stability-preserving second-order Runge–Kutta (SSP-RK2) method to achieve second-order temporal accuracy while preserving appropriate global and local bounds. We demonstrate that the proposed three-way LTNE model provides enhanced resolution of injected-fluid thermal evolution in fractured porous media relevant to EGS applications. The numerical experiments illustrate how explicitly modeling injected-fluid heating reveals thermal structures that remain hidden in classical LTE or averaged LTNE formulations, thereby o ff ering a more informative predictive tool for geothermal reservoir design and optimization. The remainder of the paper is organized as follows. In Section 2, we present the three-way LTNE model and its coupling structure. Section 3 describes the enriched Galerkin discretization, sequential splitting strategy, FCT stabilization, and SSP-RK2 [20] time integration. Numerical experiments for enhanced geothermal scenarios in fractured porous media are reported in Sec-tion 4. 
+
+2. Mathematical Modeling of Flow, Transport, and Heat Transfer 
+
+In this section, we describe the governing equations describing fluid pressure, and the local temperatures corresponding to the injected fluid, resident fluid, and solid matrix, where the in-2jected fluid and resident fluid temperature are split by a concentration. The coupled processes include Darcy flow, heat transfer between these interacting phases, and the species transport, 
+
+2.1. Pressure equation 
+
+The single-phase fluid flow in a porous medium x ∈ Ω ⊂ Rd, with d = 2, 3, is governed by Darcy’s law 
+
+u = −κ∇p, (1) together with the mass conservation equation 
+
+∇ · u := qp in Ω, (2) where u := u(x) is a d-dimensional vector field denoting the Darcy velocity and p := p(x)represents the scalar fluid pressure. The term qp = qp(x) denotes a source or sink. The mobility tensor is defined as κ = K/μ f , where K = KI is the intrinsic permeability tensor, K := K(x) > 0is the scalar permeability, μ f > 0 is the fluid viscosity, and I is the d × d identity tensor. The boundary conditions are prescribed as 
+
+p = pD on ∂ΩD, u · n = gN on ∂ΩN , (3) where ∂Ω denotes the boundary of Ω, ∂ΩD ∪ ∂ΩN = ∂Ω and ∂ΩD ∩ ∂ΩN = ∅. Here, ∂ΩD and 
+
+∂ΩN denote the Dirichlet and Neumann parts of the boundary, with prescribed data pD := pD(x)and gN := gN (x), respectively. The vector n := n(x) denotes the outward unit normal vector on 
+
+∂Ω.
+
+2.2. Temperature equation 
+
+Heat transfer in porous geothermal reservoir is often modeled using either the local thermal equilibrium (LTE) [21] assumption or the more general local thermal non-equilibrium (LTNE) formulation. The choice between these two models depends on the physical properties of the medium, flow regime, and the characteristic time scale of heat exchange between phases. 
+
+2.2.1. Local thermal equilibrium (LTE) 
+
+Under the local thermal equilibrium (LTE) assumption, the fluid temperature T f := T f (x, t)and the solid temperature Ts := Ts(x, t) are equal and share a single temperature field T := T (x, t), i.e., 
+
+T f = Ts = T.
+
+This assumption is valid when interphase heat exchange is su ffi ciently fast such that no appre-ciable temperature di ff erence exists at the scale of a representative elementary volume (REV) [22, 21, 23]. The governing LTE equation in a porous medium is written as (ρc)eff 
+
+∂T
+
+∂t + ρ f c f u · ∇ T − ∇ · (λeff ∇T ) = qT in Ω × (0 , tfinal ], (4) with the initial condition 
+
+T (x, 0) = T 0(x) in Ω, (5) and the Dirichlet and Neumann boundary conditions 
+
+T = TD on ΓD × (0 , tfinal ], −λeff ∇T · n = gT on ΓN × (0 , tfinal ]. (6) 3Here, tfinal is final computation time, qT := qT (x, t) ∈ R denotes a source or sink term. The quantity ( ρc)eff represents the e ff ective volumetric heat capacity of the porous medium, obtained by volume-averaging the contributions of the fluid and solid phases, (ρc)eff := ϕ ρ f c f + (1 − ϕ) ρscs, (7) where 0 ≤ ϕ ≤ 1 is the porosity, ρ f > 0 and ρs > 0 are the densities, and c f > 0 and cs > 0 are the specific heat capacities of the fluid and solid, respectively. The term λeff denotes the e ff ective thermal conductivity of the porous medium, defined as the sum of the fluid and solid contributions, 
+
+λeff := λ f,eff + λs,eff , (8) where λ f,eff := ϕλ f and λs,eff := (1 − ϕ)λs are the e ff ective thermal conductivities of the fluid and solid phases, based on their intrinsic thermal conductivities λ f > 0 and λs > 0. 
+
+2.3. Local thermal non-equilibrium (LTNE) 
+
+In contrast to the LTE assumption, the LTNE framework allows the fluid and solid phases to have distinct temperature fields. This distinction becomes important in geothermal and subsur-face heat-transport problems where cold fluid is injected into a much hotter formation. In such situations, interphase heat transfer is not instantaneous, and significant temperature di ff erences may exist at the scale of a representative elementary volume (REV). To account for this finite-rate interphase heat transfer, the LTNE model introduces two separate temperature fields: the fluid temperature T f and the solid temperature Ts.The governing equations for the fluid and solid temperatures T f and Ts are given by 
+
+ϕρ f c f
+
+∂T f
+
+∂t + ρ f c f u f · ∇ T f − ∇ · (λ f,eff ∇T f ) = h f s a f s (Ts − T f ) + q f in Ω × (0 , tfinal ], (9) (1 − ϕ)ρscs
+
+∂Ts
+
+∂t − ∇ ·  λs,eff ∇Ts
+
+ = h f s a f s (T f − Ts) + qs in Ω × (0 , tfinal ], (10) where q f := q f (x, t), qs := qs(x, t) are the volumetric heat source or sink term associated with fluid and solid phases, and h f s > 0 is the interfacial heat transfer coe ffi cient and a f s > 0 denotes the specific interfacial area (i.e., the solid–fluid surface area per unit bulk volume). The term 
+
+h f s a f s (Ts − T f ) represents the finite-rate heat exchange between the fluid and solid phases. In particular, when the interphase heat transfer coe ffi cient h f s a f s is su ffi ciently large, the two tem-perature fields rapidly approach thermal equilibrium, and the LTNE model reduces to the LTE formulation. The initial temperatures for the fluid and solid are prescribed to be identical: 
+
+T f (x, 0) = Ts(x, 0) = T 0(x) in Ω. (11) For the fluid phase, a Dirichlet boundary condition is imposed on the inflow boundary, while a Neumann condition is prescribed elsewhere: 
+
+T f = Tin on Γin × (0 , tfinal ], −λ f.eff ∇T f · n = g f on ∂Ω × (0 , tfinal ]. (12) For the solid phase, only Neumann boundary conditions are considered: 
+
+−λs.eff ∇Ts · n = gs on ∂Ω × (0 , tfinal ]. (13) In the next section, we present an asymptotic analysis demonstrating how the LTNE model reduces to the LTE model in the limit of strong interfacial heat exchange. 42.3.1. Asymptotic limit of strong fluid–solid heat exchange 
+
+Define the phase heat capacities per unit REV 
+
+C f := ϕ ρ f c f , Cs := (1 − ϕ) ρscs,
+
+the interfacial coupling Λ := h f s a f s , and the mixture temperature Tmix := Tmix (x, t) as the energy-equivalent average (C f + Cs) Tmix := C f T f + CsTs. (14) Summing (9)–(10) and using (14) yields the exact mixture equation (C f + Cs) ∂tTmix + ρ f c f u f ·∇ T f = ∇·  λ f,eff ∇T f + λs,eff ∇Ts
+
+ + q f + qs, (15) where λ f,eff = ϕλ f and λs,eff = (1 − ϕ)λs, as before. We introduce the temperature di ff erence θ := T f − Ts and use (14) to write 
+
+T f = Tmix + Cs
+
+C f + Cs
+
+θ, Ts = Tmix − C f
+
+C f + Cs
+
+θ. (16) Then subtracting (10) divided by Cs from (9) divided by C f , we obtain the evolution equation 
+
+∂tθ + 1
+
+ϕ u f ·∇ T f − 1
+
+C f
+
+∇·  λ f,eff ∇T f
+
+ + 1
+
+Cs
+
+∇·  λs,eff ∇Ts
+
+ +  q f
+
+C f
+
+− qs
+
+Cs
+
+ = − γ θ (17) for θ with the decay rate 
+
+γ := Λ 1
+
+C f
+
++ 1
+
+Cs
+
+!
+
+= h f s a f s 
+
+1
+
+ϕ ρ f c f
+
++ 1(1 − ϕ) ρscs
+
+!
+
+. (18) Let ε := γ−1 be small, corresponding to strong interfacial exchange Λ → ∞ . Assuming coe ffi cients and sources remain O(1) as ε → 0, equation (17) implies θ = O(ε) after a fast transient t = O(ε). Then it follows from (16) that 
+
+T f = Tmix + O(ε), Ts = Tmix + O(ε).
+
+Invoking (15) and taking ε → 0 gives (C f + Cs) ∂tTeq + ρ f c f u·∇ Teq = ∇·  [λeff  
+
+> f
+
++ λeff  
+
+> s
+
+] ∇Teq 
+
+ + q f + qs, (19) where Teq := lim ε→0 Tmix . Since C f + Cs = (ρc)eff , the limit (19) matches the LTE equation (4). As h f s a f s → ∞ , the temperature di ff erence θ = T f − Ts relaxes as θ = O(h f s a f s )−1, and the mixture temperature Tmix converges to the single LTE temperature Teq solving (19). 
+
+2.4. Three-way LTNE coupling 
+
+To accurately capture the thermal behavior of geothermal systems with strong thermal con-trasts—such as cold-fluid injection into a hot reservoir—it is often necessary to distinguish not only between the fluid and solid phases, but also between the injected and resident fluid com-ponents. These two fluid populations may coexist within the same pore space while exhibiting distinct temperatures due to di ff erences in arrival times, velocities, and local thermal exposure. 5Traditional LTE or two-temperature LTNE models are not able to explicitly represent such ther-mal separation. Therefore, we introduce a three-temperature LTNE framework with temperature fields for the injected fluid Ti(x, t), the resident fluid Tr(x, t), and the solid matrix Ts(x, t), together with a concentration variable 0 ≤ z ≤ 1 representing the injected-fluid fraction. Here, the volumetric enthalpy of the fluid phase is decomposed as 
+
+C f T f = CiTi + CrTr, (20) where the volumetric heat capacities of the injected and resident fluid components are defined by 
+
+Ci := (ϕz) ρ f c f , Cr :=  ϕ(1 − z) ρ f c f . (21) The e ff ective thermal conductivities of the injected and resident fluid components are defined as 
+
+λi,eff := ϕz λ f , λr,eff := ϕ(1 − z) λ f , (22) so that 
+
+λi,eff + λr,eff = ϕλ f = λ f,eff .
+
+The fluid–solid interfacial heat exchange is partitioned according to the injected-fluid con-centration z:
+
+h f s a f s = (z h f s a f s ) +  (1 − z) h f s a f s 
+
+ = Λ is + Λ rs , (23) where 
+
+Λis := z h f s a f s , Λrs := (1 − z) h f s a f s (24) represent the injected–fluid–solid and resident–fluid–solid coupling strengths, respectively. In addition, we account for direct heat exchange between the injected and resident fluid com-ponents. The strength of this interaction is assumed to scale with both the relative proportions of the two fluids and the available pore volume within which they coexist. Therefore, we define 
+
+Λir := ϕz(1 − z)hir air , (25) so that the injected–resident heat exchange scales with the product z(1 − z), which vanishes when either component is absent, and is further modulated by the porosity ϕ, representing the total pore space available for fluid–fluid thermal interaction. With these definitions, the three-temperature LTNE system for the injected fluid, resident fluid, and solid matrix is written as 
+
+Ci
+
+∂Ti
+
+∂t + zρ f c f u · ∇ Ti − ∇ ·  λi,eff ∇Ti
+
+ = Λ is (Ts − Ti) + Λ ir (Tr − Ti) + qi in Ω × (0 , tfinal ],
+
+(26) 
+
+Cr
+
+∂Tr
+
+∂t + (1 − z)ρ f c f u · ∇ Tr − ∇ ·  λr,eff ∇Tr
+
+ = Λ rs (Ts − Tr) + Λ ir (Ti − Tr) + qr in Ω × (0 , tfinal ],
+
+(27) 
+
+Cs
+
+∂Ts
+
+∂t − ∇ ·  λs,eff ∇Ts
+
+ = Λ is (Ti − Ts) + Λ rs (Tr − Ts) + qs in Ω × (0 , tfinal ].
+
+(28) Here, qi := qi(x, t), qr := qr(x, t), and qs := qs(x, t) denote volumetric heat source or sink terms associated with the injected fluid, resident fluid, and solid phases, respectively. 6For compactness and thermodynamic consistency, the initial states are prescribed in terms of the corresponding volumetric enthalpies: 
+
+Ti(x, 0) = H0 
+
+> i
+
+(x)
+
+Ci
+
+, Tr(x, 0) = H0 
+
+> r
+
+(x)
+
+Cr
+
+, Ts(x, 0) = H0 
+
+> s
+
+(x)
+
+Cs
+
+, in Ω, (29) where 
+
+Hi = CiTi, Hr = CrTr, Hs = CsTs
+
+denote the volumetric enthalpies of the injected fluid, resident fluid, and solid phases, respec-tively. In particular, we set H0 
+
+> i
+
+(x) = 0, so that the injected-fluid subsystem initially contains no thermal energy. Let Γin := {x ∈ ∂Ω : u f (x) · n(x) < 0}. Injection at a given temperature Tinj := Tinj (x) is imposed equivalently by the enthalpy boundary condition 
+
+Tinj = Hi,inj /Ci on Γin (30) On Γout := ∂Ω \ Γin , we impose the Neumann boundary condition 
+
+−λi,eff ∇Ti = gi on Γout . (31) For solid and resident fluid temperatures, we impose full Neumann boundary conditions 
+
+−λr,eff ∇Tr = gr, −λs,eff ∇Ts = gs on ∂Ω. (32) In the next section, we formulate an evolution equation for the concentration of injected fluid, which is used in the three-way-LTNE modeling. 
+
+2.5. Concentration equation 
+
+The injected fluid contains a dissolved or miscible component whose concentration is de-scribed by the volume fraction 
+
+z := z(x, t).
+
+We consider a binary miscible mixture, so the volume fractions of the two components satisfy 
+
+z + (1 − z) = 1,
+
+meaning that the total fluid volume fraction is unity. The evolution of z is governed by the advection equation 
+
+∂(ϕρ f z)
+
+∂t + ∇ · (ρ f z u) = 0 in Ω × (0 , tfinal ], (33) where ϕ is the porosity, ρ f is the fluid density, and qz := qz(x, t) represents volumetric source or sink terms. The initial condition for the species concentration is 
+
+z(x, 0) = z0(x) in Ω. (34) We impose the inflow boundary condition 
+
+z = zin on Γin × (0 , tfinal ], (35) where Γin := {x ∈ ∂Ω : u f (x) · n(x) < 0}, as before. 73. Numerical Methods 
+
+In this section, we present the numerical discretization of the governing equations. Spatial discretization is performed using the enriched Galerkin (EG) finite element method, which com-bines continuous Q1 elements with a discontinuous Q0 enrichment to ensure local conservation [24, 11]. Implicit and explicit time integration schemes are employed depending on the stabil-ity requirements. An EG formulation is used for the pressure, temperature, and concentration equations, and a flux-corrected transport (FCT) scheme [10] is applied to stabilize the advective terms in the transport equation for the concentration. 
+
+3.1. Enriched Galerkin method 
+
+Let Th = {Ke}Eh 
+
+> e=1
+
+denote a non-degenerate partition of the domain Ω into Eh rectangular cells of maximum diameter h = max 1≤e≤Eh hKe , where hKe is the diameter of Ke. The vertices of Th are denoted by x1, . . . , xNh . We store the indices of vertices belonging to a given cell Ke in the integer set Ne and the indices of elements that contain a given vertex xi in the integer set Ei. The set 
+
+Ni = Se∈E i Ne contains the indices of all vertices belonging to at least one cell that contains xi.Note that i ∈ N i. The boundary of Ke is denoted by ∂Ke with outward normal vector denoted by ne.The set of all edges γ in the collection of elements is denoted by Γh, and the length of γ is denoted by hγ. The sets of interior, Dirichlet boundary, Neumann boundary, and inflow /outflow boundary edges are denoted by ΓI
+
+> h
+
+, ΓDh , ΓNh , Γin  
+
+> h
+
+, and Γout  
+
+> h
+
+, respectively. Each edge is associated with a normal vector nγ. For a boundary edge, nγ represents the outward normal to ∂Ω.Let Q1( ˆ K) denote the space of multilinear polynomials ˆ v : ˆ K → R defined on the reference element ˆ K = [0 , 1] d. Using a multilinear mapping Fe : ˆK → Ke ∈ T h, we construct the space 
+
+Q1(Ke) of polynomials v : Ke → R such that v = ˆv ◦ F−1 
+
+> e
+
+for some ˆ v ∈ Q1( ˆ K). The finite element space CG-Q1 of the classical continuous Galerkin method using Q1 La-grange elements on the partition Th is defined as 
+
+VCG  
+
+> h
+
+:= {vh ∈ L2(Ω) : vh|Ke ∈ Q1(Ke) ∀Ke ∈ T h} ∩ C( ¯ Ω), (36) where C( ¯ Ω) denotes the space of functions that are continuous on ¯ Ω. The DG-Q0 space 
+
+VDG  
+
+> h
+
+:= {δvh ∈ L2(Ω) : δvh|Ke ∈ Q0(Ke) ∀Ke ∈ T h} (37) consists of functions that are constant on elements of the partition Th. The finite element space of the EG-Q1 method is then defined as (cf. [24, 10, 11, 12]) 
+
+Vh := VCG  
+
+> h
+
+⊕ VDG  
+
+> h
+
+. (38) Finally, we introduce the jump and average values for vh ∈ Vh on edges γ ∈ Γh. For an interior edge γ ∈ ΓI 
+
+> h
+
+such that γ = ∂Ke ∩ ∂Ke′ with the associated normal vector nγ = ne, the jump value is defined as [[ vh]] : =  vh|Ke
+
+ 
+
+> γ
+
+− vh|Ke′
+
+
+
+> γ
+
+. (39) Similarly, the average value {{ φ}} is defined as 
+
+{{ vh}} := 12
+
+ vh|Ke
+
+ 
+
+> γ
+
++ 12
+
+vh|Ke′
+
+
+
+> γ
+
+. (40) For edges on the boundary γ ⊂ ∂Ω, we define [[ vh]] = {{ vh}} = vh|γ.83.2. Temporal discretization 
+
+The time discretization is carried out on the time interval [0 , tfinal ], with tfinal > 0, using a given number of uniform time steps N ∈ N. The time step size is defined as ∆t = tfinal /N, and the discrete time levels are given by tn := n∆t for 0 ≤ n ≤ N. A time-dependent function evaluated at time tn is denoted by ϕn := ϕ(·, tn). Let ϕ(t) satisfy the evolution equation ∂tϕ = F (ϕ). If an implicit time discretization is preferable for stability reasons, we use the first-order backward Euler method 
+
+ϕn+1 − ϕn
+
+∆t = F (ϕn+1), n ≥ 0 (41) or the second-order backward di ff erentiation formula (BDF2) 3ϕn+1 − 4ϕn + ϕn−1
+
+2∆t = F (ϕn+1), n ≥ 1. (42) In addition to implicit schemes, we consider an explicit strong-stability-preserving (SSP) Runge–Kutta method of second order (RK2). It performs two forward Euler steps 
+
+
+
+ϕ(1) = ϕn + ∆ t F (ϕn),ϕ(2) = ϕ(1) + ∆ t F (ϕ(1) ) (43) and updates the solution as follows: 
+
+ϕn+1 = 12 (ϕ(1) + ϕ(2) ). (44) 
+
+3.3. Spatial discretization for pressure 
+
+The EG finite element approximation to the pressure p that defines the Darcy velocity (1) is denoted by ph := ph(x) ∈ Vh. The spatial semi-discretization of the Poisson equation for p,which follows from (1) and (2), employs the EG weak form find ph ∈ Vh such that Ap(ph, vh) = Fp(vh), ∀vh ∈ Vh, (45) where Ap and Fp are the bilinear form and linear functional defined as 
+
+Ap(ph, vh) =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+κ∇ph · ∇ vh dx +
+
+X
+
+> γ∈ΓI
+> h∪ΓD
+> h
+
+αp
+
+hγ
+
+Z
+
+> γ
+
+[[ κph]][[ vh]]d s
+
+−
+
+X
+
+> γ∈ΓI
+> h∪ΓD
+> h
+
+Z
+
+> γ
+
+nn κ∇ph · nγ
+
+oo [[ vh]]d s + θ
+
+X
+
+> e∈ΓI
+> h∪ΓD
+> h
+
+Z
+
+> γ
+
+nn κ∇vh · nγ
+
+oo [[ ph]]d s,
+
+(46) and 
+
+Fp(vh) =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+qpvh dx +
+
+X
+
+> γ∈ΓD
+> h
+
+αp
+
+hγ
+
+Z
+
+pD[[ vh]] d s −
+
+X
+
+> γ∈ΓN
+> h
+
+Z
+
+> γ
+
+gN [[ vh]]d s + θ
+
+X
+
+> γ∈ΓD
+> h
+
+Z
+
+> γ
+
+pD
+
+nn κ∇vh · nγ
+
+oo ds.
+
+(47) Here αp > 0 is a penalty parameter. The choice of θ leads to symmetric interior penalty Galerkin (SIPG) with θ = −1, incomplete interior penalty Galerkin (IIPG) with θ = 0, and non-symmetric interior penalty Galerkin (NIPG) with θ = 1. Throughout this paper, we choose IIPG ( θ = 0). 93.3.1. Locally conservative Darcy’s velocity 
+
+The EG approximation to the Darcy velocity u f is denoted by uh. We define a globally and locally conservative uh by di ff erentiating the EG pressure ph; cf. [25, 12] 
+
+uh|Ke = −κ∇ph ∀Ke ∈ T h, (48a) (uh · nγ)|γ = − nn κ∇ph · nγ
+
+oo + αp
+
+hγ
+
+[[ κph]] ∀γ ∈ ΓI
+
+> h
+
+, (48b) (uh · nγ)|γ = gN ∀γ ∈ ΓN 
+
+> h
+
+, (48c) (uh · nγ)|γ = −κ∇ph · nγ + αp
+
+hγ
+
+κ(ph − pD) ∀γ ∈ ΓD 
+
+> h
+
+. (48d) This definition guarantees local mass conservation on each element Ke ∈ T h in the sense that 
+
+X
+
+> γ∈∂Ke
+
+Z
+
+> γ
+
+uh · nγ ds =
+
+Z
+
+> Ke
+
+qmdx. (49) 
+
+3.4. Spatial discretization for three-way-LTNE 
+
+We denote the EG solution to LTNE system (26)–(28) by Ti,h, Tr,h, Ts,h. The spatial semi-discretization of the full LTNE system is similar to (61) and reads: find ( Ti,h, Tr,h, Ts,h) ∈ Vh × Vh × Vh such that 
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ϕiρiciz ∂Ti,h
+
+∂t vh dx = Aadv  
+
+> i
+
+(Ti,h, vh; z) + Adi ff u 
+
+> i
+
+(Ti,h, vh; z) + Hsi (vh; z) + Hri (vh; z),
+
+(50) 
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ϕrρrcr(1 − z) ∂Tr,h
+
+∂t wh dx = Aadv  
+
+> r
+
+(Tr,h, wh; z) + Adi ff u 
+
+> r
+
+(Tr,h, wh; z) + Hsr (wh; 1 − z) + Hir (wh; 1 − z),
+
+(51) 
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+(1 − ϕ)ρscs
+
+∂Ts,h
+
+∂t sh dx = Adi ff u 
+
+> s
+
+(Ts,h, sh; z) + His (sh; z) + Hrs (sh; 1 − z) (52) for all ( vh, wh, sh) ∈ Vh × Vh × Vh. The advective contributions to the semi-discrete equations for the injected and resident fluid are denoted by Aadv  
+
+> i
+
+and Aadv  
+
+> r
+
+, respectively. These functionals depend on the concentration z and are defined as 
+
+Aadv  
+
+> i
+
+(Ti,h, vh; z) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ϕi(ρc)iz T i,huh · ∇ vh dx −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> ∂K+
+> e
+
+ϕi(ρc)iz T +
+
+> i,h
+
+uh · ne vh ds
+
+−
+
+X
+
+> γ∈Γin
+> h
+
+Z
+
+> γ
+
+ϕi(ρc)iz T in vh ds,
+
+(53) 
+
+Aadv  
+
+> r
+
+(Tr,h, wh; z) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ϕr(ρc)r(1 − z)Tr,huh · ∇ wh dx −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> ∂K+
+> e
+
+ϕr(ρc)r(1 − z)T +
+
+> r,h
+
+uh · ne wh ds
+
+−
+
+X
+
+> γ∈Γin
+> h
+
+Z
+
+> γ
+
+ϕr(ρc)r(1 − z)Tin wh ds.
+
+(54) 10 The di ff usive contributions to the temperature equations for the three phases are represented by 
+
+Adi ff u 
+
+> i
+
+(Ti,h, vh; z) : = −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+λi,eff ∇Ti,h · ∇ vh dx
+
+−
+
+X
+
+> γ∈ΓIh
+
+αi
+
+hγ
+
+Z
+
+> γ
+
+[[ λi,eff Ti,h]][[ vh]] d s +
+
+X
+
+> γ∈ΓI
+> h
+
+nn λi,eff ∇Ti,h · nγ
+
+oo [[ vh]] d s
+
+−
+
+X
+
+> γ∈∂Ω
+
+Z
+
+> γ
+
+λi,eff gTi − nn λi,eff ∇Ti,h · nγ
+
+oo [[ vh]] d s,
+
+(55) 
+
+Adi ff u 
+
+> r
+
+(Tr,h, wh; z) : = −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+λi,eff ∇Tr,h · ∇ wh dx
+
+−
+
+X
+
+> γ∈ΓIh
+
+αr
+
+hγ
+
+Z
+
+> γ
+
+[[ λr,eff Tr,h]][[ wh]] d s +
+
+X
+
+> γ∈ΓI
+> h
+
+nn λr,eff ∇Tr,h · nγ
+
+oo [[ wh]] d s
+
+−
+
+X
+
+> γ∈∂Ω
+
+Z
+
+> γ
+
+λr,eff gTr − nn λr,eff ∇Tr,h · nγ
+
+oo [[ wh]] d s,
+
+(56) and 
+
+Adi ff u 
+
+> s
+
+(Ts,h, sh; z) : = −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+λs,eff ∇Ti,h · ∇ sh dx
+
+−
+
+X
+
+> γ∈ΓIh
+
+αs
+
+hγ
+
+Z
+
+> γ
+
+[[ λs,eff Ts,h]][[ sh]] d s +
+
+X
+
+> γ∈ΓI
+> h
+
+nn λs,eff ∇Ts,h · nγ
+
+oo [[ sh]] d s
+
+−
+
+X
+
+> γ∈∂Ω
+
+Z
+
+> γ
+
+λs,eff gTs − nn λs,eff ∇Ts,h · nγ
+
+oo [[ sh]] d s,
+
+(57) where αi, α r, α s > 0 are penalty parameters. The heat exchange between the phases is taken into account through 
+
+Hsi (vh; z) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+zh is ais (Ts − Ti)vh dx, (58) 
+
+Hri (vh; 1 − z) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+(1 − z)hir air (Tr − Ti)vh dx, (59) 
+
+Hsr (vh; 1 − z) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+(1 − z)hrs ars (Ts − Tr)wh dx (60) with 
+
+His ( · ; · ) = −Hsi ( · ; · ), Hri = ( · ; · ) = −Hir ( · ; · ), Hrs ( · ; · ) = −Hsr ( · ; · ).
+
+We use the implicit BDF2 scheme for time discretization in the temperature equations, be-cause an explicit treatment of di ff usive terms would result in severe time step restrictions. 11 3.5. Spatial discretization for concentration 
+
+The EG finite element approximation to the solution of (33) is denoted by zh = zh(x, t) ∈ Vh.The spatial semi-discretization of (33) is based on the following weak form: find zh ∈ Vh such that 
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ϕρ f
+
+∂zh
+
+∂t vh dx = Aadv  
+
+> z
+
+(zh, vh) ∀vh ∈ Vh, (61) where Aadv  
+
+> z
+
+(zh, vh) : = Aadv  
+
+> z
+
+(zh, vh; uh) and it is defined as 
+
+Aadv  
+
+> z
+
+(zh, vh; uh) : =
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> Ke
+
+ρ f zhuh · ∇ vh dx −
+
+> Eh
+
+X
+
+> e=1
+
+Z
+
+> ∂K+
+> e
+
+ρ f z+ 
+
+> h
+
+uh · ne vh ds −
+
+X
+
+> γ∈Γin
+> h
+
+Z
+
+> γ
+
+ρ f zin vh ds. (62) Here ∂K+ 
+
+> e
+
+:= {x ∈ ∂Ke : uh(x) · ne(x) ≥ 0}. The upwind value of zh = zch + δzh ∈ VCG  
+
+> h
+
+⊕ VDG  
+
+> h
+
+is given by 
+
+z+ 
+
+> h
+
+(x) : =
+
+
+
+zh|Ke (x) = zch(x) + δze if x ∈ ∂K+ 
+
+> e
+
+,
+
+zh|Ke′ (x) = zch(x) + δze′ if x ∈ (∂Ke\∂K+ 
+
+> e
+
+) ∩ ∂Ke′ . (63) 
+
+3.6. Flux-corrected transport EG scheme on concentration 
+
+We adopt the flux-corrected transport (FCT) scheme developed by Kuzmin, Hajduk, and Rupp [10] for an EG discretization of the linear advection equation. The method combines a continuous Q1 Galerkin approximation with a piecewise constant Q0 enrichment to ensure local conservation and improved stability. In our implementation, the FCT limiter employs the predictor–corrector formulation described in [10, Sections 4–5]. For completeness, we recall that the EG solution admits the natural decomposition 
+
+zh =
+
+> Nh
+
+X
+
+> j=1
+
+zcjφ j +
+
+> Eh
+
+X
+
+> e=1
+
+δzeχe,
+
+where {φ j}Nh 
+
+> j=1
+
+is the basis function of VCG  
+
+> h
+
+and {χe}Eh 
+
+> e=1
+
+is the basis function of VDG  
+
+> h
+
+. The degrees of freedom {zcj}Nh 
+
+> j=1
+
+and {δze}Eh 
+
+> e=1
+
+define a continuous Galerkin component zch = PNh 
+
+> j=1
+
+zcjφ j and a piecewise-constant correction δzh = PEh 
+
+> e=1
+
+δzeχe. The coe ffi cients zcj, j = 1, . . . , Nh represent the nodal values of zch. The coe ffi cients δze of the discontinuous enrichment δzh are given by 
+
+δze = ¯ze − ¯zce, e = 1, . . . , Eh. (64) Here ¯ ze = |Ke|−1 R
+
+> Ke
+
+zEG  
+
+> h
+
+dx and ¯ zce = |Ke|−1 R
+
+> Ke
+
+zch dx represent the cell averages of the EG approx-imation and of its CG component, respectively. The semi-discrete system for the coe ffi cients of (¯ zh, zch) can be written in the partitioned form 
+
+" ¯M 00 ML
+
+# ddt
+
+" ¯zzc
+
+#
+
+=
+
+" ¯aadv  
+
+> z
+
+(¯ z, zc)
+
+aadv  
+
+> z
+
+(¯ z, zc) + ˙az(¯ z, zc)
+
+#
+
+, (65) where ¯ z = (¯ ze)Eh 
+
+> e=1
+
+is the vector of EG cell averages, zc = (zcj)Nh 
+
+> j=1
+
+is the vector of CG degrees of freedom, ¯M = diag( |Ke|)Eh 
+
+> e=1
+
+is the diagonal mass matrix of the finite volume scheme for evolving 12 the cell averages ¯ ze, and ML = diag( mi)Nh 
+
+> i=1
+
+is the lumped mass matrix of the space VCG  
+
+> h
+
+, with positive diagonal entries mi = Pe∈E i
+
+R
+
+> Ke
+
+φi dx.The right-hand side vectors ¯ aadv  
+
+> z
+
+∈ REh and aadv  
+
+> z
+
+, ˙az ∈ RNh are composed from ¯aadv  
+
+> z,e
+
+:= Aupw  
+
+> z
+
+(zh, χ e), e = 1, . . . , Eh, (66) 
+
+aadv  
+
+> z,i
+
+:= Aadv  
+
+> z
+
+(zh, φ i), i = 1, . . . , Nh (67) and ˙az,i :=
+
+X
+
+> e∈E i
+
+Z
+
+> Ke
+
+φi
+
+" dzci
+
+dt − dzch
+
+dt
+
+!
+
+− d¯ ze
+
+dt − d¯ zce
+
+dt
+
+!# 
+
+dx, i = 1, . . . , Nh. (68) The contribution of ˙ az,i compensates the error due to mass lumping on the left-hand side of the subsystem for the CG degrees of freedom [10]. The operator Aupw  
+
+> z
+
+approximates the advective term of the subsystem for ¯ z using a finite volume scheme with upwind fluxes [10]. In the predictor step of the FCT algorithm, the advective contributions are approximated by low-order operators that yield vectors ¯ aLz ∈ REh and aLz ∈ RNh with ¯aLz,e := ˜Aupw  
+
+> z
+
+(zh, χ e), e = 1, . . . , Eh, (69) 
+
+aLz,i := ˜Aadv  
+
+> z
+
+(zh, φ i) +
+
+X
+
+> j∈N e
+
+dei j (zcj − zci ), i = 1, . . . , Nh. (70) The operator ˜Aupw  
+
+> z
+
+of the low-order subproblem for ¯ z corresponds to a monotone finite volume scheme in which the upwind (local Lax–Friedrichs) fluxes use cell averages instead of the one-sided limits of the piecewise-linear discontinuous EG approximation [10, 26]. The operator ˜Aadv 
+
+> z
+
+of the low-order subproblem for zc is constructed by removing the contribution of ¯ z from Aadv  
+
+> z
+
+.The artificial di ff usion coe ffi cients dei j depend on kei j := − R
+
+> Ke
+
+φi uh · ∇ φ j dx. The local extremum diminishing (LED) property of the low-order CG scheme is guaranteed for 
+
+dei j :=
+
+
+
+max {− kei j , 0, −keji }, if j ∈ N e \ { i}, i ∈ N e,
+
+− Pk∈N e\{ i} deik , if j = i ∈ N e,
+
+0, otherwise .
+
+(71) The corrector step of the FCT scheme corrects the low-order predictor by adding limited counterparts of the anti-di ff usive correction terms ¯ bz ∈ REh and bz ∈ RNh consisting of ¯bz,e := ¯aadv  
+
+> z,e
+
+− ¯aLz,e, e = 1, . . . , Eh, (72) 
+
+bz,i := aadv  
+
+> z,i
+
+− aLz,i, i = 1, . . . , Nh. (73) All relevant implementation details—including the limiting procedures that ensure the LED property for forward Euler stages of an explicit SSP Runge–Kutta time-stepping method—can be found in [10]. An extension to nonlinear scalar conservation laws was proposed in [26]. To avoid spurious oscillations within the local bounds of the FCT constraints, a high-order linear or nonlinear stabilization term can be incorporated into the raw antidi ff usive element con-tributions to be limited in the correction stage of the FCT algorithm proposed in [10]. Example of suitable local stabilization operators can be found, e.g., in [19, Chapter 4]. 13 3.7. IMPES framework and sequential solution strategy 
+
+To solve the coupled flow–transport–heat system for the coe ffi cients of the finite element approximations ph,uh, znh, T ni,h, T nr,h, T ns,h, we use an IMPES-type (Implicit Pressure, Explicit Concentration and Implicit Heat) scheme. To advance the numerical solution in time from tn
+
+to tn+1 until a final time tfinal , our algorithm updates the quantities of interest sequentially. An implicit pressure update is followed by the computation of Darcy’s velocity, an explicit update of the species concentration, and implicit updates of the temperature fields. This procedure allows us to decompose the coupled nonlinear system into subproblems that are solved in a decoupled yet consistent manner. The segregated solution strategy reduces the computational cost significantly while maintaining numerical stability under realistic time-step constraints. The overall workflow of the IMPES-type algorithm, as presented in Fig. 1, illustrates the order in which individual subproblems are solved within a single time step. Repeating the se-quence of sequential updates in an iterative manner would yield the solution of the coupled problem. However, we update each variable just once per time step. This corresponds to using a consistent IMEX linearization / operator splitting for the global nonlinear system. Darcy Flow (ph, uh)(Implicit) Transport (zn+1 
+
+> h
+
+)(Explicit: SSP RK2) Heat (T n+1 
+
+> i,h
+
+, T n+1 
+
+> r,h
+
+, T n+1 
+
+> s,h
+
+)(Implicit: BDF2)              
+
+> given znh
+> given Tmi,h,Tmi,h,Tmi,h
+> m=n,n−1
+
+advance time 
+
+tn → tn+1   
+
+> Figure 1: Flowchart of the sequential IMPES-type procedure (update from tnto tn+1): implicit Darcy update followed by an explicit transport step for the concentration and umplicit temperature updates.
+
+4. Numerical Results 
+
+In this section, we present three numerical examples to demonstrate the accuracy and appli-cability of the proposed approach. The first example is a convergence study that validates the algorithmic coupling of the concentration equation with the three-way LTNE model; see Fig-ure 1. The second example compares the classical LTE and LTNE models for di ff erent heat transfer regimes, both with and without advection, in order to verify the asymptotic analysis presented in Section 2.3.1. In addition, the three-way LTNE model is simulated under the same setup for comparison. The third example applies the three-way LTNE model to flow and heat 14 transport in a fractured medium. All numerical experiments are implemented using the deal.II 
+
+[27] finite element library. 
+
+4.1. Example 1: Convergence Test 
+
+For the first example, we test the concentration (z) and temperature (Ti, Tr, TS ) models with respect to prescribed smooth solutions in the two-dimensional domain Ω = [0 , 1] 2 with a final computation time tfinal = 0.1, defined as follows: 
+
+z(t, x, y) = sin( t) sin  π(x + y) cos  π(2 x − y),
+
+Ti(t, x, y) = cos( t) cos  2π(x + y) sin  π(2 x − y),
+
+Tr(t, x, y) = sin( t) sin  2π(x + y) cos  π(2 x − y),
+
+Ts(t, x, y) = t sin( x + y).
+
+A prescribed exact divergence-free velocity field is given by 
+
+u(x, y) = sin( πx) cosh  π(y − 12 ), − cos( πx) sinh  π(y − 12 ) .
+
+For simplicity, the physical parameters in the energy conservation laws are assumed to be con-stant 
+
+ρβ = cβ = 1, λβ, eff = 0.5, β ∈ { i, r, s},
+
+hβ1β2 = 0.1, β1 , β2 ∈ { i, r, s}.
+
+The sources are prescribed to satisfies the equations (33),(26)-(28). The Dirichlet value of 
+
+z, Ti, Tr are prescribed on in flow boundary ( Γin = {(x, y) ∈ ∂Ω : x = 1}), and exact Neumann values for Ti, Tr, Ts are prescribed on the whole boundary ∂Ω.For each time step, we first solve concentration z using EG-FCT method using SSP-RK2, then solve all of the temperature ( Ti, Tr, Ts) use EG-Q1 with BDF2 time discretization, and the problem are solved on a sequence of four uniformly refined meshes ranging from h = 2−3 to 
+
+h = 2−6 with an initial time step of ∆t = 0.001, which is successively halved at each refinement cycle. The convergence results are presented in Table 1, and the errors are evaluated using the following formulas, demonstrated here for the variable z:max 
+
+> 0≤tn≤tfinal
+
+∥znh − zn∥L2(Ω), max 
+
+> 0≤tn≤tfinal
+
+∥znh − zn∥H1(Th). (74) From Table 1, we observe that the convergence rate in the L2-norm increases with mesh refine-ment, approaching nearly second-order accuracy, while the convergence rate in the H1-norm attains first-order accuracy. These results demonstrate the expected optimal convergence behav-ior of the proposed numerical scheme. 15 Variable Refinement max n ∥ · ∥ L2 max n ∥ · ∥ H1
+
+Error Rate Error Rate 
+
+Ti
+
+1 4.8666e −01 – 4.1301e +00 –2 1.2136e −01 2.00 2.2812e +00 0.86 3 3.0415e −02 2.00 1.1598e +00 0.98 4 7.6041e −03 2.00 5.7955e −01 1.00 
+
+Tr
+
+1 1.5885e −02 – 2.0526e −01 –2 3.9710e −03 2.00 1.1285e −01 0.86 3 9.9281e −04 2.00 5.7571e −02 0.97 4 2.4820e −04 2.00 2.8900e −02 0.99 
+
+Ts
+
+1 1.3053e −03 – 4.2931e −03 –2 3.2632e −04 2.00 2.2297e −03 0.95 3 8.1581e −05 2.00 1.0687e −03 1.06 4 2.0395e −05 2.00 5.1993e −04 1.04 
+
+z
+
+1 1.5885e −02 – 2.0524e −01 –2 3.9702e −03 1.98 1.1245e −01 0.87 3 9.9241e −04 1.99 5.7571e −02 0.98 4 2.4820e −04 2.00 2.8700e −02 0.99          
+
+> Table 1: Convergence results for max n∥ · ∥ L2and max n∥ · ∥ H1norms for z,Ti,Tr, and Ts.
+
+Remark 1. We emphasize that the EG-FCT limiting procedure is applied only to the advection fluxes and does not modify the source terms in the concentration equation. In this convergence test, the prescribed solution is smooth; consequently, the limiter remains almost inactive or only weakly active (with the flux limiter almost to be 1). As a result, the method retains its underlying high-order accuracy, and the expected optimal convergence rates are observed. 
+
+4.2. Example 2: Comparison between LTE and LTNE models 
+
+In the second example, we want to discuss where the LTE assumption is insu ffi cient and the LTNE model therefore becomes necessary. We consider a computational domain Ω = [0 , 4] ×
+
+[0 , 1] with a final simulation time of tfinal = 1.0. We will test LTNE problem with and without advection, combined with di ff erent ranges of the heat transfer coe ffi cient h f s , while the volume-specific interfacial area is fixed at a f s = 1. The following two cases are considered: 
+
+• Case 1: LTNE with fast heat exchange ( h f s = 10) 
+
+– Without and with advection ( u = (0 .5, 0)). 
+
+– Compared with LTE with Dirichlet condition leans toward the fluid phase (77). 
+
+• Case 2: LTNE with slow heat exchange ( h f s = 0.001) 
+
+– Without and with advection ( u = (0 .5, 0)). 
+
+– Compared LTE with Dirichlet condition leans toward the phase average (78) Details of the boundary and initial conditions are shown in Figure 2. For simplicity, we neglect the source terms by setting Q f = Qs = 0, and assume a porosity of ϕ = 0.5. Both phases are taken to have identical densities, heat capacities, and conductivities 
+
+ρ f = ρs = 1, c f = cs = 1, λ f = λs = 1.
+
+16 Dirichlet Boundary ΓD                                          
+
+> Tf=20
+> Case 1: T=20
+> Case 2: T=60
+> Neumann boundary ∂Ω\ΓD
+> λeff
+> f∇Tf·n=λeff
+> f·n=0
+> Case 1& 2: λeff ∇T·n=0Ω = [0 ,4] ×[0 ,1]
+> Initial: Tf=Ts=T=100
+> Figure 2: Domain and boundary /initial conditions for LTNE models ( Tfand Ts), and LTE ( T) for Case 1 and Case 2.
+
+We also set the same initial conditions for solid and fluid phases as 
+
+T f = Ts = 100 on Ω × { 0}, (75) and impose the following boundary conditions 
+
+T f = 20 on ΓD × (0 , tfinal ],λeff  
+
+> f
+
+∇T f · n = 0 on ∂Ω\ΓD × (0 , tfinal ],λeff  
+
+> s
+
+∇Ts · n = 0 on ∂Ω × (0 , tfinal ],
+
+(76) where ΓD = {(x, y) ∈ ∂Ω : x = 0}. Although the problem is posed in a two-dimensional domain, the solutions are essentially one-dimensional. 
+
+LTNE: fast heat exchange h f s = 10 between T f and T s:
+
+We first consider the case h f s = 10, which represents scenarios where the heat exchange between T f and Ts is fast (see Figure 3-4). The LTNE problem is solved both with advection, 
+
+u = (0 .5, 0), and without advection, using the numerical scheme described in Section 3, on a mesh of size h = 2−5 with a timestep ∆t = 0.005. For comparison, we also solve the LTE model with the following initial and boundary conditions: 
+
+T = 100 on Ω × { 0},
+
+
+
+T = 20 on ΓD × (0 , tfinal ],λeff ∇T · n = 0 on ∂Ω × (0 , tfinal ].
+
+(77) Note that the Dirichlet boundary condition for the equilibrium temperature T is chosen so that it leans toward the fluid temperature T f on ΓD.We present the solution values along the middle horizontal line {(x, y) ∈ Ω : y = 0.5}. The numerical solutions are shown in Figure 3 (without advection) and Figure 4 (with advection), where the mixed temperature Tmix = 12 (T f + Ts), computed from the LTNE model as defined in (14), is also included. In both cases, the two temperatures T f and Ts rapidly approach each other and reach the same value within a short time. As a result, we also observe Tmix ≈ T , which is consistent with our analysis in Section 2.3.1. 
+
+LTNE: Slow heat exchange h f s = 0.001 between T f and T s:
+
+We next set h f s = 0.001, representing scenarios where the heat exchange between T f and Ts
+
+is extremely slow. The LTNE problem is solved both with advection, u = (0 .5, 0), and without advection, using the same discretization setup as in the previous case. For comparison, the LTE model is supplemented with di ff erent boundary conditions: 
+
+T = 100 on Ω × { 0},
+
+
+
+T = 60 on ΓD × (0 , tfinal ],λeff ∇T · n = 0 on ∂Ω × (0 , tfinal ].
+
+(78) 17 Figure 3: Example 1: LTNE: fast heat exchange h f s = 10, without advection. The solution values of T f , Ts, Tmix =
+
+0.5( T f + Ts), and T from LTE with initial /boundary condition (77). 
+
+Figure 4: Example 1: LTNE: fast heat exchange h f s = 10, with advection u = (0 .5, 0). The solution values of T f , Ts,
+
+Tmix = 0.5( T f + Ts), and T from LTE with initial /boundary condition (77). 
+
+18 Figure 5: Example 1: LTNE: slow heat exchange h f s = 0.001, without advection. The solution values of T f , Ts,       
+
+> Tmix =0.5( Tf+Ts), and Tfrom LTE with initial /boundary condition (78).
+
+Here, the Dirichlet boundary value for the equilibrium temperature T is chosen so that it leans toward the equilibrium temperature between the fluid and solid, 12 (T f + Ts) = 60, on ΓD.Figure 5 shows the solution without advection, where we observe a significant di ff erence between T f and Ts. Nevertheless, we still find Tmix ≈ T . On the other hand, for the case with advection, shown in Figure 6, we observe not only a pronounced di ff erence between T f and Ts,but also that T no longer matches Tmix . This demonstrates that the LTE model, which assumes 
+
+T f ≈ Ts and approximates their equilibrium by a single temperature T , is no longer valid. In fact, it even fails to accurately approximate the true equilibrium temperature Tmix between the two phases. 
+
+Conclusion: 
+
+From the previous two setups, the temperatures T f and Ts quickly approach each other and reach the same value within a very short time whenever h f s is large, regardless of whether advec-tion is included or not. However, when h f s is small, T f and Ts no longer reach local equilibrium. Moreover, advection amplifies the discrepancy between the mixed temperature Tmix = 12 (T f +Ts)and the reference temperature T .We conclude the first example by plotting 
+
+θ := Ts − T f
+
+for various values of h f s = 1, 3, 7, with and without advection, in Figure 7. This allows us to assess the validity of the LTE assumption ( T f ≈ Ts ≈ T ). The results indicate that when the heat exchange coe ffi cient h f s is not su ffi ciently large, the LTE assumption breaks down. Furthermore, the inclusion of advection exacerbates the violation of LTE, thereby showing the necessity of the LTNE model to describe the evolution of T f , Ts, and the equilibrium temperature Tmix between the two phases. 19 Figure 6: Example 1: LTNE: slow heat exchange h f s = 0.001, wit advection u = (0 .5, 0). The solution values of T f , Ts,
+
+Tmix = 0.5( T f + Ts), and T from LTE with initial /boundary condition (78). 
+
+Figure 7: Example 1: Influence of heat transfer coe ffi cient ( h f s ), advection, and time on the deviation between solid and fluid temperatures θ = Ts − T f . Lower h f s increases the deviation, and advection further amplifies the di ff erence between the phases and therefore, break the LTE assumption ( Ts ≈ T f ≈ T ). 
+
+20 4.3. Example 2.1: three-way LTNE Models 
+
+In this example, we consider a three-way LTNE model with advection velocity 
+
+u = (0 .25 , 0) defined on the same domain Ω = [0 , 4] × [0 , 1], using the same final simulation time tfinal =
+
+8.0. For the concentration z, the following inflow boundary condition and initial condition are prescribed: 
+
+z = 0.99 on Γin × (0 , tfinal ], z = 0.01 on Ω × { 0}.
+
+The additional parameters in the three-way LTNE model are set to hir = air = 1.0, while all remaining parameters are kept the same as in the previous example. We note that a small heat exchange rate h f s = 0.001 is chosen so that the discussion mainly focuses on the solution behavior of Ti and Tr. Under this setting, the solid temperature Ts remains nearly constant, as observed in Example 1.            
+
+> (a) z
+> (b) Ti
+> (c) Tr
+> (d) Tmix
+> f
+> Figure 8: Example 2.1: The solution profiles for injected fluid temperature Ti, resident fluid temperature Tr, and com-puted fluid Tmix
+> ffrom three-way LTNE (20) and LTNE
+
+21 Figures 8b–8d show the concentration z profiles, the temperature profiles of Ti and Tr, and the mixed fluid temperature T mix  
+
+> f
+
+defined by (20) 
+
+T mix  
+
+> f
+
+= zT i + (1 − z)Tr
+
+at time t = 8.0. Because the setup of this example is essentially equivalent to a one-dimensional problem, the solution exhibits predominantly one-dimensional behavior. For a more detailed examination, we plot the solution values along the middle line {(x, y) ∈
+
+Ω : y = 0.5} in Figures 9a and 9b, showing the temperature fields Ti, Tr, Ts, and T mix  
+
+> f
+
+, and the concentration z, respectively. As time progresses, the resident fluid temperature Tr decreases because heat is extracted by the injected fluid. Consequently, the injected fluid temperature Ti
+
+increases over time. Meanwhile, the mixed fluid temperature T mix  
+
+> f
+
+also decreases with time. However, in contrast to the two-way LTNE model shown in Figure 6 in Example 2, the sharp concentration gradient leads to a noticeable temperature jump in this case.        
+
+> (a) Ti,Tr,Ts,Tmix
+> f
+> (b) z
+> Figure 9: Example 2.1: solution values over the middle horizontal line.
+
+22 ΓD1 ΓD2
+
+ΓN
+
+ΓN
+
+(0 , 0) 
+
+(4 , 1)              
+
+> Figure 10: Example 2. 34 high-permeability ( K=1) fracture channels (black lines) of width 0.1 embedded in a low-permeability background ( K=0.01) in the domain Ω = [0 ,4] ×[0 ,1]. A uniform grid with mesh size h=1/64 is used for the discretization.
+
+4.4. Example 3: Heterogeneous permeability with fracture: LTNE for injected and resident fluids 
+
+In the computational domain Ω = [0 , 4] × [0 , 1], we consider a heterogeneous setup with a network of 34 high-permeability fracture channels (see Figure 10). Each fracture is represented by a line segment of uniform thickness corresponding to an e ff ective fracture width of 0 .1. The fractures are assigned a permeability of K = 1, while the surrounding background matrix has a much lower permeability of K = 0.01. We set source for solid phase to be Qs ≡ 1, and for incoming and resident fluid, we set 
+
+Qi = Qr ≡ 0. The inflow boundary conditions for the energy system are prescribed as follows: 
+
+Ti = Tr = 20 on ΓD1 × (0 , tfinal ],λeff  
+
+> f
+
+∇Ti · n = λeff  
+
+> f
+
+∇Tr · n = 0 on ( ΓD2 ∪ ΓN) × (0 , tfinal ],λeff  
+
+> s
+
+∇Ts · n = 0 on ∂Ω × (0 , tfinal ].
+
+(79) The boundary conditions for the concentration of incoming fluid and the pressure are given as 
+
+z = 0.99 on ΓD1 × (0 , tfinal ],
+
+p = 1 on ΓD1 ,
+
+p = 0 on ΓD2 ,
+
+u · n = 0 on ΓN.
+
+(80) The corresponding initial state for temperature and concentration are given by 
+
+Ti = 20 , Tr = 100 , Ts = 100 , z ≡ 0.01 on Ω. (81) The physical parameters used in the simulations are summarized in Table 2. We use the same spatial discretization with h = 2−6 and temporal discretization ∆t = 0.005. Figure 11 shows the steady-pressure profiles, and Figure 12 shows the concentration values at several time steps. We note that the concentration values remains to be bounded within 0 .01 ≤
+
+z ≤ 0.99. Figure 13 shows injected-fluid temperature Ti and its corresponding enthalpy zT i. Although 
+
+Ti may attain relatively high values in regions where the injected-fluid concentration is low, the 23 Phase ( j) Density ( ρ j) Heat capacity ( c j) Conductivity ( λ j)Incoming fluid ( i) 1.0 1.0 1.0 resident fluid ( r) 1.0 1.0 1.0 Solid ( s) 2.0 2.0 2.0 Heat transfer coe ffi cients 
+
+hir air 7.0 
+
+his ais 1.0 
+
+hrs ars 1.0 Other quantities Porosity ϕ = 0.5 
+
+> Table 2: Example 2: parameters for phase properties, heat transfer, and other fixed quantities.
+> Figure 11: Example 3: pressure p.
+
+corresponding enthalpy remains small due to the concentration weighting. The enthalpy carried by the injected fluid attains its maximum near the concentration fronts, where both temperature and concentration contribute significantly. Similarly, Figure 14 shows the resident-fluid temperature Tr, along with its associated en-thalpy. We observe that the resident-fluid enthalpy (1 − z)Tr is progressively extracted as heat is transferred to the injected fluid. Finally, Figure 15 displays the mixed-fluid temperature T mix  
+
+> f
+
+= zT i + (1 − z)Tr. The overall mixed-fluid temperature decreases over time due to continuous injection of cold fluid. For com-pleteness, we show the solid temperature in Figure 16, which remains relatively homogeneous because the heat transfer rate between the solid and fluid is slow. However, the solid temperature exhibits an overall decreasing trend with time. 24 (a) t = 2.0            
+
+> (b) t=4.0
+> (c) t=8.0
+> (d) t=12 .0
+> (e) t=16 .0
+
+Figure 12: Example 3: solution profiles for concentration z at selected time step. 
+
+25 (a) t = 2.0            
+
+> (b) t=4.0
+> (c) t=8.0
+> (d) t=12 .0
+> (e) t=16 .0
+
+Figure 13: Example 3: the solution profiles for injected fluid temperature Ti (first column) and enthalpy z × Ti (second column) at selected time step. The colormap for enthalpy is discretized into 50 levels. 
+
+26 (a) t = 2.0            
+
+> (b) t=4.0
+> (c) t=8.0
+> (d) t=12 .0
+> (e) t=16 .0
+
+Figure 14: Example 3: the solution profiles for injected fluid temperature Tr (first column) and enthalpy (1 − z) × Tr
+
+(second column) at selected time step. The colormap for enthalpy is discretized into 50 levels. 
+
+27 (a) t = 2.0            
+
+> (b) t=4.0
+> (c) t=8.0
+> (d) t=12 .0
+> (e) t=16 .0
+
+Figure 15: Example 3: the profiles for mixed fluid temperature T mix  
+
+> f
+
+:= zT i +(1 −z)Tr at selected time step. The colormap for mixed fluid temperature is discretized into 50 levels. 
+
+28 (a) t = 2.0        
+
+> (b) t=8.0
+> (c) t=16 .0
+> Figure 16: Example 3: the solution profiles for solid temperature Tsat selected time step.
+
+Conclusion. In this work, we propose a three-way local thermal nonequilibrium (three-way LTNE) model that extends the classical LTNE framework by decomposing the fluid temperature into injected and resident components through a concentration field from a volumetric enthalpy perspective. The resulting formulation introduces separate temperature fields for injected fluid, resident fluid, and solid matrix, enabling explicit resolution of injected-fluid heating. The model preserves thermodynamic consistency and reduces to classical LTNE and LTE formulations in appropriate limiting regimes. An enriched Galerkin discretization combined with a sequential splitting strategy provides stable and locally conservative solutions for advection-dominated geothermal flow. Numerical experiments demonstrate that the three-way LTNE model captures thermal fea-tures along concentration fronts that are not resolved by averaged-temperature approaches, high-lighting its potential for improved prediction of thermal breakthrough in enhanced geothermal systems. In the present study, the thermal di ff usion coe ffi cients are chosen su ffi ciently large to avoid strongly advection-dominated regimes. In convection-dominated settings, the BDF2 time dis-cretization does not guarantee preservation of a discrete maximum principle, and additional sta-bilization or limiting strategies may therefore be required. Moreover, point sources are not con-29 sidered in the pressure, concentration, or temperature equations. When such localized sources are present, further stabilization techniques may be necessary to prevent spurious oscillations in the numerical solution. 
+
+References 
+
+[1] P. Olasolo, M. Ju´ arez, M. Morales, S. D´Amico, I. Liarte, Enhanced geothermal systems (EGS): A review, Renew-able and Sustainable Energy Reviews 56 (2016) 133–144. [2] F. Nath, M. N. Mahmood, E. Ofosu, A. Khanal, Enhanced geothermal systems: A critical review of recent advance-ments and future potential for clean energy production, Geoenergy Science and Engineering 243 (2024) 213370. [3] M. W. McClure, R. N. Horne, An investigation of stimulation mechanisms in enhanced geothermal systems, Inter-national Journal of Rock Mechanics and Mining Sciences 72 (2014) 242–260. [4] M. Quintard, S. Whitaker, Local thermal equilibrium for transient heat conduction: theory and comparison with numerical experiments, International Journal of Heat and Mass Transfer 38 (15) (1995) 2779–2796. [5] D. Nield, A. Kuznetsov, Local thermal nonequilibrium e ff ects in forced convection in a porous medium channel: a conjugate problem, International Journal of Heat and Mass Transfer 42 (17) (1999) 3245–3252. [6] M. Parhizi, M. Torabi, A. Jain, Local thermal non-equilibrium (LTNE) model for developed flow in porous media with spatially-varying biot number, International Journal of Heat and Mass Transfer 164 (2021) 120538. [7] H. S. Vik, S. Salimzadeh, H. M. Nick, Heat recovery from multiple-fracture enhanced geothermal systems: the eff ect of thermoelastic fracture interactions, Renewable energy 121 (2018) 606–622. [8] R. A. Caulk, E. Ghazanfari, J. N. Perdrial, N. Perdrial, Experimental investigation of fracture aperture and perme-ability change within enhanced geothermal systems, Geothermics 62 (2016) 12–21. [9] S. Lee, M. F. Wheeler, T. Wick, A phase-field di ff raction model for thermo-hydro-mechanical propagating fractures, International Journal of Heat and Mass Transfer 239 (2025) 126487. [10] D. Kuzmin, H. Hajduk, A. Rupp, Locally bound-preserving enriched Galerkin methods for the linear advection equation, Computers & Fluids 205 (2020) 104525. [11] S. Lee, Y.-J. Lee, M. F. Wheeler, A locally conservative enriched Galerkin approximation and e ffi cient solver for elliptic and parabolic problems, SIAM Journal on Scientific Computing 38 (3) (2016) A1404–A1429. [12] S. Lee, M. F. Wheeler, Adaptive enriched Galerkin methods for miscible displacement problems with entropy residual stabilization, Journal of Computational Physics 331 (2017) 19–37. [13] S.-Y. Yi, S. Lee, Physics-preserving enriched Galerkin method for a fully-coupled thermo-poroelasticity model, Numerische Mathematik 156 (3) (2024) 949–978. [14] S. Lee, H. von Wahl, T. Wick, A thermo-flow-mechanics-fracture model coupling a phase-field interface approach and thermo-fluid-structure interaction, International Journal for Numerical Methods in Engineering 126 (1) (2025) e7646. [15] K. Aziz, A. Settari, Petroleum Reservoir Simulation, Applied Science Publishers, London, 1979. [16] H. Chen, S. Sun, A new physics-preserving impes scheme for incompressible and immiscible two-phase flow in heterogeneous porous media, Journal of Computational and Applied Mathematics 381 (2021) 113035. [17] H. Chen, J. Kou, S. Sun, T. Zhang, Fully mass-conservative impes schemes for incompressible two-phase flow in porous media, Computer Methods in Applied Mechanics and Engineering 350 (2019) 641–663. [18] D. Kuzmin, M. M¨ oller, M. Gurris, Algebraic flux correction II, in: D. Kuzmin, R. L¨ ohner, S. Turek (Eds.), Flux-corrected transport: principles, algorithms, and applications, Springer Netherlands, Dordrecht, 2012, pp. 193–238. [19] D. Kuzmin, H. Hajduk, Property-Preserving Numerical Schemes for Conservation Laws, World Scientific, 2023. [20] S. Gottlieb, C.-W. Shu, E. Tadmor, Strong stability-preserving high-order time discretization methods, SIAM Re-view 43 (1) (2001) 89–112. [21] D. Nield, A. Bejan, Convection in Porous Media, Springer New York, 1992. [22] M. Kaviany, Principles of Heat Transfer in Porous Media, Springer, 1995. [23] H.-J. G. Diersch, FEFLOW: Finite Element Modeling of Flow, Mass and Heat Transport in Porous and Fractured Media, 1st Edition, Springer, Berlin, Heidelberg, 2014. [24] R. Becker, E. Burman, P. Hansbo, M. G. Larson, A reduced P1-discontinuous Galerkin method, chalmers Finite Element Center Preprint 2003-13, Chalmers University of Technology (2003). [25] S. Sun, M. F. Wheeler, Discontinuous galerkin methods for coupled flow and reactive transport problems, Applied Numerical Mathematics 52 (2-3) (2005) 273–298. [26] D. Kuzmin, S. Lee, Y.-Y. Yang, Bound-preserving and entropy stable enriched Galerkin methods for nonlinear hyperbolic equations, Journal of Computational Physics 541 (2025) 114323. [27] D. Arndt, W. Bangerth, M. Bergbauer, M. Feder, M. Fehling, J. Heinz, T. Heister, L. Heltai, M. Kronbichler, M. Maier, et al., The deal. II library, version 9.5, Journal of Numerical Mathematics 31 (3) (2023) 231–246. 
+
+30

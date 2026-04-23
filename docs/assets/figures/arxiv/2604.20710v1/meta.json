@@ -1,0 +1,142 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-001.webp",
+      "caption": "Figure 12: Example 3: solution profiles for concentration z at selected time step.",
+      "page": 25,
+      "index": 1,
+      "width": 800,
+      "height": 1103
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-002.webp",
+      "caption": "Figure 13: Example 3: the solution profiles for injected fluid temperature Ti (first column) and enthalpy z × Ti (second column) at selected time step. The colormap for enthalpy is discretized into 50 levels.",
+      "page": 26,
+      "index": 2,
+      "width": 869,
+      "height": 666
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-003.webp",
+      "caption": "Figure 8: Example 2.1: The solution profiles for injected fluid temperature Ti, resident fluid temperature Tr , and computed fluid T mix f from three-way LTNE (20) and LTNE",
+      "page": 21,
+      "index": 3,
+      "width": 579,
+      "height": 676
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-004.webp",
+      "caption": "Figure 16: Example 3: the solution profiles for solid temperature Ts at selected time step.",
+      "page": 29,
+      "index": 4,
+      "width": 800,
+      "height": 661
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-005.webp",
+      "caption": "Figure 9: Example 2.1: solution values over the middle horizontal line.",
+      "page": 22,
+      "index": 5,
+      "width": 515,
+      "height": 739
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-006.webp",
+      "caption": "Figure 1: Flowchart of the sequential IMPES-type procedure (update from tn to tn+1): implicit Darcy update followed by an explicit transport step for the concentration and umplicit temperature updates.",
+      "page": 14,
+      "index": 6,
+      "width": 412,
+      "height": 419
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-007.webp",
+      "caption": "Figure 4: Example 1: LTNE: fast heat exchange h f s = 10, with advection u = (0.5, 0). The solution values of T f , Ts, Tmix = 0.5(T f + Ts), and T from LTE with initial/boundary condition (77).",
+      "page": 18,
+      "index": 7,
+      "width": 641,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-008.webp",
+      "caption": "Figure 3: Example 1: LTNE: fast heat exchange h f s = 10, without advection. The solution values of T f , Ts, Tmix = 0.5(T f + Ts), and T from LTE with initial/boundary condition (77).",
+      "page": 18,
+      "index": 8,
+      "width": 641,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-009.webp",
+      "caption": "Figure 10: Example 2. 34 high-permeability (K = 1) fracture channels (black lines) of width 0.1 embedded in a lowpermeability background (K = 0.01) in the domain Ω = [0, 4] × [0, 1]. A uniform grid with mesh size h = 1/64 is used for the discretization.",
+      "page": 23,
+      "index": 9,
+      "width": 859,
+      "height": 250
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-010.webp",
+      "caption": "Figure 15: Example 3: the profiles for mixed fluid temperature T mix f := zTi+(1−z)Tr at selected time step. The colormap for mixed fluid temperature is discretized into 50 levels.",
+      "page": 28,
+      "index": 10,
+      "width": 800,
+      "height": 1103
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-011.webp",
+      "caption": "Figure 5: Example 1: LTNE: slow heat exchange h f s = 0.001, without advection. The solution values of T f , Ts, Tmix = 0.5(T f + Ts), and T from LTE with initial/boundary condition (78).",
+      "page": 19,
+      "index": 11,
+      "width": 641,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-012.webp",
+      "caption": "Figure 14: Example 3: the solution profiles for injected fluid temperature Tr (first column) and enthalpy (1 − z) × Tr (second column) at selected time step. The colormap for enthalpy is discretized into 50 levels.",
+      "page": 27,
+      "index": 12,
+      "width": 869,
+      "height": 666
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-013.webp",
+      "caption": "Table 2: Example 2: parameters for phase properties, heat transfer, and other fixed quantities.",
+      "page": 24,
+      "index": 13,
+      "width": 656,
+      "height": 208
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-014.webp",
+      "caption": "Figure 11: Example 3: pressure p.",
+      "page": 24,
+      "index": 14,
+      "width": 800,
+      "height": 194
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-015.webp",
+      "caption": "Figure 6: Example 1: LTNE: slow heat exchange h f s = 0.001, wit advection u = (0.5, 0). The solution values of T f , Ts, Tmix = 0.5(T f + Ts), and T from LTE with initial/boundary condition (78).",
+      "page": 20,
+      "index": 15,
+      "width": 641,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-016.webp",
+      "caption": "Figure 7: Example 1: Influence of heat transfer coefficient (h f s), advection, and time on the deviation between solid and fluid temperatures θ = Ts−T f . Lower h f s increases the deviation, and advection further amplifies the difference between the phases and therefore, break the LTE assumption (Ts ≈ T f ≈ T ).",
+      "page": 20,
+      "index": 16,
+      "width": 800,
+      "height": 531
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20710v1/fig-017.webp",
+      "caption": "Table 1: Convergence results for maxn ∥ · ∥L2 and maxn ∥ · ∥H1 norms for z, Ti, Tr , and Ts.",
+      "page": 16,
+      "index": 17,
+      "width": 596,
+      "height": 456
+    }
+  ]
+}
