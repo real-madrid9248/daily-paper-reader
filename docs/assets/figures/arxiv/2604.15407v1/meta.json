@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-001.webp",
+      "caption": "Figure 6. Hydrogen permeability measured using SHIELD as a function of inverse temperature for 316 stainless steel, compared with published literature4,17–22. Literature values obtained from HTM23. Error bars represent propagated uncertainties from the pressurebased flux determination.",
+      "page": 6,
+      "index": 1,
+      "width": 489,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-002.webp",
+      "caption": "Figure 1. Schematic illustration of hydrogen permeation regimes under Pdown ≈ 0.",
+      "page": 2,
+      "index": 2,
+      "width": 398,
+      "height": 534
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-003.webp",
+      "caption": "Figure 7. Hydrogen permeability measured using SHIELD as a function of inverse temperature for AISI 1018 low-carbon steel, compared with literature24. Literature values obtained from HTM23. Error bars represent propagated uncertainties from the pressure-based flux determination.",
+      "page": 7,
+      "index": 3,
+      "width": 489,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-004.webp",
+      "caption": "Figure 2. Schematic evolution of downstream pressure following application of an upstream pressure step. After an initial transient, a linear increase in downstream pressure is observed, corresponding to steady-state permeation. The slope of the linear regime is directly proportional to the permeation flux.",
+      "page": 3,
+      "index": 4,
+      "width": 504,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-005.webp",
+      "caption": "Figure 3. Schematic representation of the PI&D diagram of the SHIELD experimental platform",
+      "page": 4,
+      "index": 5,
+      "width": 798,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2604.15407v1/fig-006.webp",
+      "caption": "Figure 4. Permeation flux as a function of upstream hydrogen pressure for 316 stainless steel. At low pressures, the flux scales approximately linearly with pressure, indicating surface-limited transport. At higher pressures, the dependence approaches a square-root scaling, consistent with diffusion-limited permeation. The transition between regimes occurs at around 80 Torr in the present experimental configuration.",
+      "page": 5,
+      "index": 6,
+      "width": 512,
+      "height": 374
+    }
+  ]
+}

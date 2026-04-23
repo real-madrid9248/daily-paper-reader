@@ -1,0 +1,1544 @@
+Title: CO$_2$ sequestration hybrid solver using isogeometric alternating-directions and collocation-based robust variational physics informed neural networks (IGA-ADS-CRVPINN)
+
+URL Source: https://arxiv.org/pdf/2604.20731v1
+
+Published Time: Thu, 23 Apr 2026 01:18:44 GMT
+
+Number of Pages: 33
+
+Markdown Content:
+# CO 2 sequestration hybrid solver using isogeometric alternating-directions and collocation-based robust variational physics informed neural networks (IGA-ADS-CRVPINN) 
+
+Askold Vilkha a, Tomasz Służalec a, Marcin Łoś a, Maciej Paszyński a, ∗
+
+> aAGH University of Krakow, Faculty of Computer Science, Al. Mickiewicza 30, Kraków, 30-059, Poland
+
+Abstract 
+
+This paper presents the hybrid solver for a CO 2 sequestration problem. The solver uses the IGA-ADS (IsoGeometric Analysis Alternating Directions solver) to compute the saturation scalar field update using the explicit method, and CRVPINN (Collocation-based Robust Variational Physics Informed Neural Networks solver) to compute the pressure scalar field. The study focuses on simulating the physical behavior of CO 2
+
+in porous structures, excluding chemical reactions. The mathematical model is based on Darcy’s Law. The CRVPINN is pretrained on the initial pressure configuration, and the time step pressure updates require only 100 iterations of the Adam method per time step. We compare our hybrid IGA-ADS solver, coupled with the CRVPINN method, with a baseline of the IGA-ADS solver coupled with the MUMPS direct solver. Our hybrid solver is over 3 times faster on a single computational node from the ARES cluster of ACK CYFRONET. Future work includes extensive testing, inverse problem solving, and potential application to H2 storage problems. 
+
+Keywords: CO 2 sequestration, Isogeometric finite element method, Alternating-directions sovler, Physics Informed Neural Networks, Robust loss, Collocation method 
+
+1. Introduction 
+
+Given the significant influence of carbon dioxide ( CO 2) on global warming, the development of carbon capture strategies is of the highest importance. One of the prevalent strategies is the process called CO 2 sequestration. The main idea of this 
+
+> ∗Corresponding author. Email address: paszynsk@agh.edu.pl
+> arXiv:2604.20731v1 [math.NA] 22 Apr 2026
+
+process is to directly capture the CO 2 from the emission sources, such as power plants and factories, and store it in underground porous structures of both natural and human-made origin (abandoned oil wells, mines, aquifers) [ 1, 2, 3]. This strategy is more beneficial than others (ocean storage, mineralization, direct air capture), both economically and ecologically. It is expected to be the most useful in the short and medium-term and can help mitigate the economic effects until more environmentally-friendly alternatives for energy production come into wide usage [ 4, 5]. In the context of the CO 2 sequestration problem, four common situations are outlined: structural, capillary, dissolution, and mineralization [ 4]. We develop a solver that can be applied to the first three of them, as it does not take into account the chemical reactions in the reservoir, but can effectively simulate the physical behavior of the pumped gas in the porous structure, and in the case of pumping into the liquid brine solution. In this work, we are implementing the CO 2 sequestration problem in the IGA-ADS (IsoGeometric Analysis using Alternating Directions Solver) software [ 6]. This framework is a Finite-Element Method solver employing a sequence of isogeometric 
+
+L2 projections for solving time-dependent problems with higher-order and continuity B-spline-based discretization. It has been successfully applied to problems like heat transfer [ 6], Maxwell’s equations solver [ 7], and tumor growth simulations [ 8]. In this paper, the IGA-ADS solver is applied to compute the saturation scalar field. Unfortunately, we also need to compute the pressure scalar field, which is not compatible with the IGA-ADS method, as it is described by a stationary PDE. Thus, we couple the IGA-ADS solver with the Collocation-Based Robust Variational Physics Informed Neural Networks (CRVPINN) [ 9]. The CRVPINN is an extension of the Robust Variational PINN (RVPINN) [ 10 ], introducing the collocation points and the Kronecker delta test functions to avoid expensive integrations of the weak residuals of RVPINN. The RVPINN uses the robust loss function. It modifies the weak residuals of the Variational PINN (VPINN) [ 11 ] by incorporating the inverse of the Gram matrix computed with the inner product, for which the weak formulation is bounded and inf-sup stable. The VPINN replaces the strong residuals of the Physics Informed Neural Network (PINN) [ 12 ] with the weak residuals. In this sense, the CRVPINN method can be seen as a PINN method extended to discrete weak residuals, computed with the Kronecker delta test function, modified by the inverse of the Gram matrix, which makes the discrete weak residual-based loss function robust. The hybrid IGA-ADS solver coupled with the CRVPINN solver is over 3 times faster than the IGA-ADS solver coupled with the MUMPS direct solver [ 13 , 14 ]. We believe that our method will provide a fast and reliable solver for this problem. Moreover, in our future work, we also plan to experiment with the (hydrogen) H2
+
+storage problems and implement the inverse problem solver. 22. CO2 sequestration problem formulation 
+
+Following the previous works [ 3, 15 , 16 ], we use the analytical expression for the 
+
+CO 2 sequestration problem (Darcy’s Law). 
+
+ϕ∂ tSw = ∇ ·  
+
+> (
+
+Sw
+
+μw
+
+K (∇p − ρw⃗g)
+
+> )
+
++ qw (1) 
+
+ϕ∂ tSg = ∇ ·  
+
+> (
+
+Sg
+
+μg
+
+K (∇p − ρg⃗g)
+
+> )
+
++ qg (2) where Sw and Sg are the brine solution and gas saturations, respectively, ϕ is the porosity, μw and μg are the viscosities of the brine solution and gas, K is the permeability, p is the pressure, ρw and ρg are the densities of the brine solution and gas, g is the gravitational acceleration, and qw and qg are the source terms for the brine solution and gas, respectively. A trivial constraint that Sw + Sg = 1 is also applied, so we will only compute one of the fields. Taking this into account, we can rewrite the equation (1) as follows: 
+
+− ϕ∂ tSg = ∇ ·  
+
+> (
+
+1 − Sg
+
+μw
+
+K (∇p − ρw⃗g)
+
+> )
+
++ qw (3) Hence, we have a system of two equations (3) and (2) with two unknowns Sg and p.To simplify the system even further, we can sum these equations and get the following equation: 
+
+∇ ·  
+
+> ((
+
+1 − Sg
+
+μw
+
++ Sg
+
+μg
+
+> )
+
+K∇p
+
+> )
+
+= ∇ · 
+
+> (
+
+⃗gK  
+
+> (
+
+1 − Sg
+
+μw
+
+ρw + Sg
+
+μg
+
+ρg
+
+> ))
+
+− (qw + qg) (4) We will then use this equation to compute pressure p after setting some initial saturation S0 
+
+> g
+
+. In each following time step, we compute pressure pn based on the saturation Sng as follows: 
+
+∇ ·  
+
+> ((
+
+1 − Sng
+
+μw
+
++ Sng
+
+μg
+
+> )
+
+K∇pn
+
+> )
+
+= ∇ · 
+
+> (
+
+⃗gK  
+
+> (
+
+1 − Sng
+
+μw
+
+ρw + Sng
+
+μg
+
+ρg
+
+> ))
+
+− (qnw + qng ) (5) After computing pn and Sng , we can compute Sn+1  
+
+> g
+
+based on the pressure pn as follows (using the forward Euler method): 
+
+ϕSn+1  
+
+> g
+
+− Sng
+
+τ = ∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
++ qng
+
+Sn+1  
+
+> g
+
+= Sng + ϕ−1τ ∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
++ ϕ−1τ q ng (6) 33. Weak formulation of the problem 
+
+First, let us consider the weak formulation of the saturation equation (6) . The computationally challenging part of this equation is the divergence term. Hence, we will derive the weak formulation to get rid of this operator. In order to do this, we multiply the equation by a test function v and integrate over the computational domain Ω:
+
+> ∫
+> Ω
+
+Sn+1  
+
+> g
+
+v d Ω = 
+
+> ∫
+> Ω
+
+(Sng + ϕ−1τ q ng )v d Ω + ϕ−1τ
+
+> ∫
+> Ω
+
+∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+v d Ω (7) Now, we can solve the last term using integration by parts: 
+
+> ∫
+> Ω
+
+∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+v d Ω =  
+
+> ∫
+> Γ
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g) ·⃗n
+
+> )
+
+v d Γ − 
+
+> ∫
+> Ω
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+· ∇ v d Ω
+
+, where Γ is the boundary of the computational domain Ω, and ⃗n is the outward normal vector to the boundary Γ. By selecting boundary conditions such that the boundary integral vanishes (in our case, we use zero Dirichlet boundary conditions on saturation Sg), the last term simplifies to: 
+
+> ∫
+> Ω
+
+∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+v d Ω = − 
+
+> ∫
+> Ω
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+· ∇ v d Ω (8) Now, considering that vector ⃗g is pointed downwards (in the vertical y-axis), we can rewrite the last term as follows: 
+
+> ∫
+> Ω
+
+∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+v d Ω =  
+
+> ∫
+> Ω
+> (
+
+Sng
+
+μg
+
+K(ρggv y − ∇ pn · ∇ v)
+
+> )
+
+dΩ (9) Hence, our weak formulation of the saturation equation (6) becomes: 
+
+> ∫
+> Ω
+
+Sn+1  
+
+> g
+
+v d Ω = 
+
+> ∫
+> Ω
+
+Sng v d Ω + ϕ−1τ 
+
+> ∫
+> Ω
+> (
+
+Sng
+
+μg
+
+K(ρggv y − ∇ pn · ∇ v) + qng v
+
+> )
+
+dΩ (10) Next, we will derive the weak formulation of the pressure equation (5) . Similar to the previous case, we multiply the equation by a test function v and integrate over the computational domain Ω:
+
+> ∫
+> Ω
+
+∇ ·  
+
+> ((
+
+1 − Sng
+
+μw
+
++ Sng
+
+μg
+
+> )
+
+K∇pn
+
+> )
+
+v d Ω = 
+
+> ∫
+> Ω
+
+∇ · 
+
+> (
+
+⃗gK  
+
+> (
+
+1 − Sng
+
+μw
+
+ρw + Sng
+
+μg
+
+ρg
+
+> ))
+
+v d Ω −
+
+> ∫
+> Ω
+
+(qnw + qng )v d Ω
+
+(11) 4As we have already established in the previous case, we can transform the divergence terms using the integration by parts similar to equation (8) . Thus, we get the following weak formulation of the pressure equation (5):  
+
+> ∫
+> Ω
+> ((
+
+1 − Sng
+
+μw
+
++ Sng
+
+μg
+
+> )
+
+K∇pn
+
+> )
+
+· ∇ v d Ω = 
+
+> ∫
+> Ω
+> (
+
+⃗gK  
+
+> (
+
+1 − Sng
+
+μw
+
+ρw + Sng
+
+μg
+
+ρg
+
+> ))
+
+· ∇ v d Ω + 
+
+> ∫
+> Ω
+
+(qnw + qng )v d Ω
+
+(12) 
+
+4. Discretization with B-spline basis functions 
+
+Now, we can move on to the numerical implementation of these equations using B-spline basis functions within the IGA-ADS framework. By using the same logic as for the weak form derivation in the previous section, the equation (6) can be reformulated as a variational formulation for computing L2 products with test functions v:
+
+(Sn+1 ,v)L2 = ( Sn + τ LSn + τ f n,v)L2;
+
+LSn = ϕ−1∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
+;
+
+fn = ϕ−1qng
+
+(13) The saturation functions Sn and Sn+1 and the test function v are then approximated as linear combinations of the B-spline basis functions of order r and continuity Cr−1:
+
+Sn ≈ ∑
+
+> i,j
+
+Si,jn Bxi,rByj,r;
+
+Sn+1 ≈ ∑
+
+> i,j
+
+Si,jn+1 Bxi,rByj,r;
+
+v = Bxk,rByl,r
+
+(14) Hence, we end up with a system of linear equations (as isogeometric L2 projections) for the saturation functions at each time step: 
+
+> ∑
+> i,j
+
+Si,jn+1 (Bxi,r(x)Byj,r(y),Bxk,r(x)Byl,r(y)) L2 =
+
+> ∑
+> i,j
+
+Si,jn (Bxi,r(x)Byj,r(y) + τ ∑
+
+> i,j
+
+Si,jn L(Bxi,r(x)Byj,r(y)) + fn, Bxk,rByl,r
+
+> 
+> L2
+
+, ∀k,l
+
+(15) 5We can express it in a matrix form as follows: 
+
+
+
+(Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+, Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+) · · · (Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+, BxNx,rByNy ,r)(Bx
+
+> 2,r
+
+By
+
+> 1,r
+
+, Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+) · · · (Bx
+
+> 2,r
+
+By
+
+> 1,r
+
+, BxNx,rByNy ,r)
+
+... ... ... ...
+
+(BxNx,rByNy ,r, Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+) · · · (BxNx,rByNy ,r, BxNx,rByNy ,r)
+
+
+
+S1,1 
+
+> n+1
+
+S2,1 
+
+> n+1
+
+...
+
+SNx,Ny
+
+> n+1
+
+
+
+=
+
+(∑ 
+
+> i,j
+
+Si,jn (Bxi,r(x)Byj,r(y) + τ ∑ 
+
+> i,j
+
+Si,jn L(Bxi,r(x)Byj,r(y)) + fn,Bx
+
+> 1,r
+
+By
+
+> 1,r
+
+)
+
+> L2
+
+(∑ 
+
+> i,j
+
+Si,jn (Bxi,r(x)Byj,r(y) + τ ∑ 
+
+> i,j
+
+Si,jn L(Bxi,r(x)Byj,r(y)) + fn,Bx
+
+> 2,r
+
+By
+
+> 1,r
+
+)
+
+> L2
+
+...(∑ 
+
+> i,j
+
+Si,jn (Bxi,r(x)Byj,r(y) + τ ∑ 
+
+> i,j
+
+Si,jn L(Bxi,r(x)Byj,r(y)) + fn,BxNx,rByNy ,r
+
+)
+
+> L2
+
+
+
+(16) The Gram matrix build with B-splines over regular 2D domain Ω = Ω x × Ωy has a Kronecker product structure 
+
+Mijkl = ( Bij , Bkl )L2 =
+
+∫
+
+> Ω
+
+Bij Bkl dΩ = 
+
+∫
+
+> Ω
+
+Bxi (x)Byj (y)Bxk (x)Byl (y) dΩ=
+
+∫
+
+> Ω
+
+(BiBk)( x) ( Bj Bl)( y) dΩ = 
+
+(∫ 
+
+> Ωx
+
+BiBk dx
+
+) (∫
+
+> Ωy
+
+Bj Bl dy
+
+)
+
+= Mxik Myjl 
+
+(17) In other words M = Mx ⊗ M y and the inverse M−1 = Mx−1 ⊗ M y−1.Since Mx and My are multi-diagonal due to local B-splines support, they can be inverted in a linear cost using Thomas algorithm. The pressure equation (9) can be implemented in a similar way, however, we can only solve it for the pressure gradient ∇p instead of the pressure p itself if we want to keep the same Kronecker product structure of the resulting system of equations. This is clearly visible from the variational formulation presented below. 
+
+(( 1 − Sng
+
+μw
+
++ Sng
+
+μg
+
+)
+
+K∇pn, ∇ · v
+
+)
+
+> L2
+
+=
+
+(⃗gK 
+
+( 1 − Sng
+
+μw
+
+ρw + Sng
+
+μg
+
+ρg
+
+)
+
+, ∇ · v
+
+)
+
+> L2
+
+− (qnw + qng , v)L2
+
+(18) However, we can still express pressure and saturation as linear combinations of B-spline basis functions: 
+
+Sng (x, y) = ∑
+
+> i,j
+
+Si,jn Bxi,r(x)Byj,r(y); (19) 
+
+pn(x, y) = ∑
+
+> i,j
+
+pi,jn Bxi,r(x)Byj,r(y) (20) 6This discretization allows us to factor out the pressure values ( pi,jn ) as control points of the B-spline basis functions, and apply the gradient operator to the basis functions instead of the pressure itself. Then, we can define a generalized system of equations for pressure SP = F.
+
+S(i,j;k,l) =
+
+(( 1−∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μw
+
++
+
+∑    
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μg
+
+)
+
+K(x, y)
+
+∇ · (
+
+Bxi,r(x)Byj,r(y))
+
+, ∇ · (
+
+Bxk,r(x)Byl,r(y))) 
+
+> L2
+
+
+
+> (i,j;k,l)
+
+(21) 
+
+P =
+
+
+
+p1,1 
+
+> n
+
+· · · 
+
+pNx,Ny
+
+> n
+
+ (22) 
+
+F(k,l) =
+
+(⃗gK (x, y)
+
+( 1−∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μw
+
+ρw +
+
+∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μg
+
+ρg
+
+)
+
+,
+
+∇ · Bxk,r(x)Byl,r(y)) 
+
+> L2
+
+− (
+
+qnw + qng , Bxk,r(x)Byl,r(y))
+
+> L2
+
+
+
+> (k,l)
+
+(23) This system can be solved using the MUMPS solver [ 13 , 14 ], which has an interface integrated into the IGA-ADS software. However, the computational cost of the MUMPS solver applied for the pressure updates is O(N 1.5 p2) [ 17 ] for the two-dimensional problems, and it dominates the linear O(N ) computational cost of the IGA-ADS solver applied for saturation updates. Thus, we will replace the MUMPS solver with the CRVPINN solver [9]. 
+
+5. Collocation-based Robust Variational Physics Informed Neural Network solver for pressure 
+
+In this paper, we want to replace the calls to the MUMPS direct solver with the Collocation-based Robust Variational PINN (CRVPINN) solver. We will introduce the main concepts of the CRVPINN formulation used for the pressure computation of the CO2 sequestration problem. For a more detailed description of the method, along with a library of practical examples, we refer to [9]. We focus on the pressure computation in the CO 2 sequestration problem 
+
+∇ · 
+
+( 1 − Sg
+
+μw
+
++ Sg
+
+μg
+
+)
+
+K
+
+︸ ︷︷ ︸
+
+> α
+
+∇pn
+
+ = ∇ · 
+
+(⃗gK 
+
+( 1 − Sg
+
+μw
+
+ρw + Sg
+
+μg
+
+ρg
+
+)) 
+
+− (qw + qg)
+
+︸ ︷︷ ︸
+
+> f
+
+(24) 7This problem is equivalent to the Poisson problem with a non-constant diffusion coefficient α
+
+∇ · (α∇pn) = f (25) We define a discrete computational domain: 
+
+Ωh := {(ih , jh ) ∈ (0, 1) 2 : 0 ≤ i ≤ N , 0 ≤ j ≤ N }, (26) where h = 1 /N is the grid spacing, and N is the number of collocation points in each direction. The discrete gradients are defined as follows: 
+
+∇+ui,j := ( ∇x+ui,j , ∇y+ui,j ) :=  
+
+> (
+
+ui+1, j − ui,j
+
+h , ui,j+1 − ui,j
+
+h
+
+> )
+
+,
+
+∇−ui,j := ( ∇x−ui,j , ∇y−ui,j ) :=  
+
+> (
+
+ui,j − ui−1, j
+
+h , ui,j − ui,j−1
+
+h
+
+> )
+
+,
+
+(27) where ui,j := u(ih , jh ). We introduce the equivalence of the continuous L2-norm and scalar product: 
+
+(u, v)h = h2 ∑
+
+> p∈Ωh
+
+u(p)v(p), ∥u∥2 
+
+> h
+
+= ( u, u)h (28) We also introduce a discrete equivalence of H10 (Ω) space 
+
+D0, h = {
+
+u ∈ Dh : u|∂Ωh = 0 }
+
+, ∂Ωh = ∂Ω ∩ Ωh (29) as well as the equivalence of the continuous H10 -norm and scalar product: 
+
+(u, v)∇,h = ( ∇x+u, ∇x+v)h + ( ∇y+u, ∇y+v)h , ∥u∥2 
+
+> ∇,h
+
+= ( u, u)∇,h (30) We also introduce discrete Kronecker delta test functions 
+
+v = δi,j := 
+
+> {
+
+1 if x = xi,j ,0 if x̸ = xi,j . (31) where xi,j = ( ih , jh ).Then, we can refer to the weak formulation of the problem defined in equation (18) , adapting it to our CRVPINN formulation. We will use the Kronecker delta function δi,j as the test function. Hence, the building blocks for the residual function are defined as follows: 
+
+αi,j = 
+
+> (
+
+1 − Sng (xi,j )
+
+μw
+
++ Sng (xi,j )
+
+μg
+
+> )
+
+K(xi,j ); 
+
+RHS i,j = ∇+ ·
+
+> (
+
+⃗gK (x i,j ) 
+
+> (
+
+1 − Sng (xi,j )
+
+μw
+
+ρw + Sng (xi,j )
+
+μg
+
+ρg
+
+> ))
+
+− (qnw(xi,j ) + qng (xi,j )) 
+
+(32) 8And trivially, we replace the pressure function p with the output of the neural network PINN (xi,j ). The discrete weak formulation for the pressure equation is: 
+
+(αi,j ∇+PINN i,j , ∇+δk,l) = ( RHS i,j , δk,l), ∀(k, l) ∈ { 0, 1, ..., N }2 (33) Now, we can define a discrete weak residual function for the pressure equation: RES k,l = ∑
+
+> i,j
+
+(αi,j ∇+PINN i,j , ∇+δk,l) − (RHS i,j , δk,l) (34) We notice that assuming 0 < γ ≤ α ≤ C, we have 
+
+γ ∥u∥∇,h ≤ sup  
+
+> v∈D0, h
+> v̸=0
+
+(∇+pn, ∇+v)h
+
+∥v∥∇,h
+
+≤ C ∥u∥∇,h (35) that is, we can show inf-sup stability with constants γ, C, using (∇+pn, ∇+v)h =(pn, v)∇,h. To move forward from a discrete weak residual to a discrete robust loss function, we need to define the Gram matrix constructed with the inner product of Kronecker deltas (δij , δkl )∇,h.
+
+Gi,j;k,l = h−2
+
+> 
+
+4 for (i, j) = ( k, l), 
+
+− 1 for (k, l) ∈ { (i + 1, j), ( i − 1, j)},
+
+− 1 for (k, l) ∈ { (i, j + 1), ( i, j − 1) }.
+
+(36) Finally, our loss function for the pressure equation is: LOSS (θ) = RES T (θ)G−1RES (θ) (37) Instead of direct inversion of the Gram matrix G, we perform LU factorization, as shown below: 
+
+G = LU Uz = RES (θ)
+
+Lq = zq = L−1z = L−1U−1RES (θ) = G−1RES (θ)
+
+LOSS (θ) = RES T (θ)q
+
+(38) Here, in order to find z and q, we only need to perform forward and backward substitution, which have linear computational cost. The LU factorization of the Gram matrix is performed only once at the beginning of the simulation. 96. IGA-ADS-CRVPINN Algorithm 
+
+1. Given the permeability map K, the porosity map ϕ, the source terms qw, qg, the gravitational acceleration ⃗g , and the viscosities μw, μg of the brine solution and the gas, along with the initial saturation S0 
+
+> g
+
+expressed as a linear combination of B-splines. 2. Run the pretraining of the CRVPINN for the initial pressure p0. Minimize the loss (37) with the Gram matrix G given by (36) , using the vectorized residual, namely LOSS (θ) = ∑
+
+> i=1,..., N
+> ∑
+> j=1,..., N
+> ∑
+> k=1,..., N
+> ∑
+> l=1,..., N
+
+Gi,j;k,lRES i,j (θ)RES k,l(θ) (39) where RES k,l = ∑
+
+> i,j
+
+(αi,j ∇+PINN i,j (θ), ∇+δk,l) − (RHS i,j , δk,l) (40) with the right-hand side (34) including the initial saturation S0
+
+> g
+
+RHS i,j = ∇+ ·
+
+> (
+
+⃗gK (x i,j ) 
+
+> (
+
+1 − S0 
+
+> g
+
+(xi,j )
+
+μw
+
+ρw + S0 
+
+> g
+
+(xi,j )
+
+μg
+
+ρg
+
+> ))
+
+− (q0
+
+> w
+
+(xi,j ) + q0 
+
+> g
+
+(xi,j )) 
+
+(41) 3. Use n = 1 to obtain Sng = S0 
+
+> g
+
+.4. Compute the L2 projection of the resulting discrete pressure approximated by PINN i,j into the B-splines representation pn.5. Compute the saturation update from (6) 
+
+Sn+1  
+
+> g
+
+= Sng + ϕ−1τ ∇ ·  
+
+> (
+
+Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+> )
+
++ ϕ−1τ q ng (42) 6. Repeat point 5 ten times using the same pressure approximation. 7. Train the update of the pressure approximation pn+1 using the CRVPINN. Minimize the loss (37) with the Gram matrix G given by (36) , using the vectorized residual, with the right-hand side (34) including the actual saturation 
+
+Sng approximation RHS i,j = ∇+ ·
+
+> (
+
+⃗gK (x i,j ) 
+
+> (
+
+1 − Sng (xi,j )
+
+μw
+
+ρw + Sng (xi,j )
+
+μg
+
+ρg
+
+> ))
+
+− (qnw(xi,j ) + qng (xi,j )) 
+
+(43) 8. If the maximum number of iterations has been reached, then STOP. Otherwise, go to 5. 10 7. IGA-ADS-MUMPS Algorithm 
+
+1. Given the permeability map K, the porosity map ϕ, the source terms qw, qg, the gravitational acceleration ⃗g , and the viscosities μw, μg of the brine solution and the gas, along with the initial saturation S0 
+
+> g
+
+expressed as the linear combination of B-splines. 2. Solve the initial pressure configuration from (21) -(23) using the MUMPS solver 
+
+(( 1−∑     
+
+> i,jSi,j
+> 0(Bxi,r(x)Byj,r(y))
+> μw
+
++
+
+∑    
+
+> i,jSi,j
+> 0(Bxi,r(x)Byj,r(y))
+> μg
+
+)
+
+K(x, y)
+
+∇ · (
+
+Bxi,r(x)Byj,r(y))
+
+, ∇ · (
+
+Bxk,r(x)Byl,r(y))) 
+
+> L2
+
+
+
+> (i,j;k,l)
+
+
+
+p1,1 0
+
+· · · 
+
+pNx,Ny
+
+> 0
+
+ =
+
+(⃗gK (x, y)
+
+( 1−∑     
+
+> i,jSi,j
+> 0(Bxi,r(x)Byj,r(y))
+> μw
+
+ρw +
+
+∑     
+
+> i,jSi,j
+> 0(Bxi,r(x)Byj,r(y))
+> μg
+
+ρg
+
+)
+
+,
+
+∇ · Bxk,r(x)Byl,r(y)) 
+
+> L2
+
+− (
+
+q0 
+
+> w
+
++ q0 
+
+> g
+
+, Bxk,r(x)Byl,r(y))
+
+> L2
+
+
+
+> (k,l)
+
+(44) 3. Define n = 0 so Sng = S0 
+
+> g
+
+and pn = p0.4. Compute the saturation update from (6) 
+
+Sn+1  
+
+> g
+
+= Sng + ϕ−1τ ∇ · 
+
+( Sng
+
+μg
+
+K (∇pn − ρg⃗g)
+
+)
+
++ ϕ−1τ q ng (45) 5. Solve the pressure update from (21) -(23) using the MUMPS solver (similar to point 2, but with the actual saturation approximation Sng ). 
+
+(( 1−∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μw
+
++
+
+∑    
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μg
+
+)
+
+K(x, y)
+
+∇ · (
+
+Bxi,r(x)Byj,r(y))
+
+, ∇ · (
+
+Bxk,r(x)Byl,r(y))) 
+
+> L2
+
+
+
+> (i,j;k,l)
+
+
+
+p1,1 
+
+> n
+
+· · · 
+
+pNx,Ny
+
+> n
+
+ =
+
+(⃗gK (x, y)
+
+( 1−∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μw
+
+ρw +
+
+∑     
+
+> i,jSi,jn(Bxi,r(x)Byj,r(y))
+> μg
+
+ρg
+
+)
+
+,
+
+∇ · Bxk,r(x)Byl,r(y)) 
+
+> L2
+
+− (
+
+qnw + qng , Bxk,r(x)Byl,r(y))
+
+> L2
+
+
+
+> (k,l)
+
+(46) 6. If the maximum number of iterations has been reached, then STOP. Otherwise, go to 4. 11 8. Results 
+
+8.1. Simulation Setup 
+
+We present results for three different test configurations (K1, K2, K3) with varying porosity and permeability maps. The porosity and permeability distributions for each configuration are illustrated in Figures 1 and 2, respectively. For all our simulations, if we use a permeability map, we use the corresponding porosity map (i.e , K1 uses porosity map 1, K2 uses porosity map 2, etc.). The computational domain is a 2D rectangular region of size 50 m × 50 m. The physical and numerical parameters used in the simulations are summarized in Table (1). The simulations are performed using a uniform mesh with appropriate boundary conditions: no-flux conditions, and pressure boundary conditions on the left, right, top, and bottom boundaries. The CO 2 injection is modeled through a source term located at the center of the domain, representing an injection well.   
+
+> (a) Configuration K1 (b) Configuration K2 (c) Configuration K3
+
+Figure 1: Porosity distributions for three different reservoir configurations. The values range from 0 to 1.   
+
+> (a) Configuration K1 (b) Configuration K2 (c) Configuration K3
+
+Figure 2: Permeability distributions for three different reservoir configurations. The units are in mDarcy, in simulation we use SI units (1 mDarcy ≃ 10 −15 m2). 
+
+12 SI 
+
+ρg 479 (kg/m 3)
+
+ρw 1045 (kg/m 3)
+
+g 9.81 (m/s 2)
+
+μg 3.95 × 10 −5 (Pa · s) 
+
+μw 25.35 × 10 −5 (Pa · s) 
+
+KA 1 × 10 −15 (m 2)
+
+> Table 1: Simulation parameters in SI units
+
+8.2. Numerical experiments with IGA-ADS-MUMPS solver 
+
+First, we use the IGA-ADS solver to solve the equation (6) iteratively for each time step, and the MUMPS solver to solve the equation (5) . We completed simulations for the configurations K1, K2, and K3 using only a porosity map and both porosity and permeability maps. For the porosity-only case, we set a constant permeability value of K = 1 × 10 −15 m2 throughout the domain. The simulation parameters are set as follows: time step size τ = 5000 seconds, number of time steps = 500, and the source term is defined as a circle of radius 3 m at the center of the domain with a strength of qg = 1 × 10 −6 (dimensionless units of Sg) per iteration. The results of the simulations are presented in Figures 3, 4, 5. We employed 100 times 100 intervals for the IGA-ADS solver, using quadratic B-splines. The next simulation set includes both porosity and permeability maps for the configurations K1, K2, and K3. The simulation parameters are: time step size 
+
+τ = 1000 seconds, number of time steps = 500, and source term defined as a circle of radius 3 m at the center of the domain with a strength of qg = 5 × 10 −6 (dimensionless units of Sg) per iteration. The results are shown in Figures 6, 7, 8. 
+
+8.3. Numerical experiments with IGA-ADS-CRVPINN solver 
+
+Second, we performed the simulations of the IGA-ADS solver employed for the saturation updates (6) , coupled with the CRVPINN solver equipped for the pressure updates (5) (we use the IGA-ADS-CRVPINN solver). We performed tests to validate the pressure evaluation against the IGA-ADS direct solver results based on the same simulation parameters. In our tests, we pretrained the CRVPINN model for the initial pressure configuration using 20,000 epochs with the Adam optimizer [ 18 ] and a learning rate of 0.0001 based on the initial saturation S0 
+
+> g
+
+. In the figures, the initial training results are shown and compared with the IGA-ADS solver results. After this pre-training step, we trained the model for each following time step for 100 epochs based on the new saturation Sng . For the uniform permeability case, the results are 13 (a) t = 0 s 
+
+(b) t = 250,000 s (= 50 time steps) 
+
+(c) t = 750,000 s (= 150 time steps) 
+
+(d) t = 1,250,000 s (= 300 time steps) 
+
+Figure 3: CO2 saturation evolution for configuration K1 with uniform permeability at different time steps. 
+
+14 (a) t = 0 s 
+
+(b) t = 250,000 s (= 50 time steps) 
+
+(c) t = 750,000 s (= 150 time steps) 
+
+(d) t = 1,250,000 s (= 300 time steps) 
+
+Figure 4: CO2 saturation evolution for configuration K2 with uniform permeability at different time steps. 
+
+15 (a) t = 0 s 
+
+(b) t = 250,000 s (= 50 time steps) 
+
+(c) t = 750,000 s (= 150 time steps) 
+
+(d) t = 1,250,000 s (= 300 time steps) 
+
+Figure 5: CO2 saturation evolution for configuration K3 with uniform permeability at different time steps. 
+
+16 (a) t = 0 s 
+
+(b) t = 50,000 s (= 50 time steps) 
+
+(c) t = 150,000 s (= 150 time steps) 
+
+(d) t = 300,000 s (= 300 time steps) 
+
+Figure 6: CO2 saturation evolution for configuration K1 with non-uniform permeability at different time steps. 
+
+17 (a) t = 0 s 
+
+(b) t = 50,000 s (= 50 time steps) 
+
+(c) t = 150,000 s (= 150 time steps) 
+
+(d) t = 300,000 s (= 300 time steps) 
+
+Figure 7: CO2 saturation evolution for configuration K2 with non-uniform permeability at different time steps. 
+
+18 (a) t = 0 s 
+
+(b) t = 50,000 s (= 50 time steps) 
+
+(c) t = 150,000 s (= 150 time steps) 
+
+(d) t = 300,000 s (= 300 time steps) 
+
+Figure 8: CO2 saturation evolution for configuration K3 with non-uniform permeability at different time steps. 
+
+19 shown in Figures 9, 10, 11. We have been able to achieve very good agreement between the two solvers (with a relative error of less than 5% in most of the domain).   
+
+> (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s
+> (c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps
+
+Figure 9: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K1 with uniform permeability. 
+
+For non-uniform permeability cases, the results are shown in Figures 12, 13, 14. The complexity of the permeability map introduces more challenges for the CRVPINN model, but the agreement with the IGA-ADS solver remains reasonable (with a relative error of about 15-20% in some areas). We have noticed that the model behaves better when the source term is larger in area or stronger in intensity. We have also recorded the loss function values during the training process for both uniform and non-uniform permeability cases. The loss curves are presented 20 (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s 
+
+(c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps 
+
+Figure 10: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K2 with uniform permeability. 
+
+21 (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s 
+
+(c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps 
+
+Figure 11: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K3 with uniform permeability. 
+
+22 (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s 
+
+(c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps 
+
+Figure 12: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K1 with permeability map. 
+
+23 (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s 
+
+(c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps 
+
+Figure 13: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K2 with permeability map. 
+
+24 (a) CRVPINN solution at t = 0 s (b) Difference at t = 0 s 
+
+(c) CRVPINN solution after 20 time steps (d) Difference after 20 time steps 
+
+Figure 14: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K3 with permeability map. 
+
+25 in Figures 16 and 17, respectively. The top panel of each subfigure represents the 20,000 iterations of pretraining, and the bottom panel presents the pressure updates using 100 iterations of the training, for the first 200 iterations of the IGA-ADS (the CRVPINN training is executed every 10 iterations of the IGA-ADS solver). 
+
+8.4. Timing and Performance Analysis 
+
+For the training of the CRVPINN model, we use the Adam optimizer with a learning rate of 10 −4, and a domain with 10 4 collocation points (i.e. N = 100 ), with the physical size of the grid being 50 × 50 m2. There are two main phases of the training process: pre-training and continuous training. The pre-training phase is performed only once, and it consists of training the model for 20000 epochs on some starting configuration of the problem, given the corresponding saturation map from the IGA-ADS solver. This phase is computationally expensive and takes around 500 to 600 seconds on a single GPGPU. However, after this phase, we can perform continuous training for the subsequent time steps, which takes around 3-5 seconds for each step (100 epochs every 10 iterations from the IGA-ADS solver). For each of these time steps, we use the saturation map from the IGA-ADS solver as input for the CRVPINN model and then return a pressure map, which is used for the next iteration of the IGA-ADS solver. A comparison between the IGA-ADS solver for saturation, coupled with the MUMPS direct solver for pressure, and the IGA-ADS solver for saturation, coupled with the CRVPINN solver for pressure, is presented in Figures 18-19. It has been developed on a computing node from the ARES cluster [ 19 ] at ACC CYFRONET 1.The node is equipped with 32 cores, an Intel(R) Xeon(R) Gold 6242 CPU @ 2.80GHz, and 384 GB of RAM. We executed 1000 time steps with the IGA-ADS-MUMPS solver. The timings are presented in Figure 18. Both the IGA-ADS solver and the MUMPS direct solver were executed on a single workstation of the CYFRONET cluster using the multi-core CPU. Then, we replaced the MUMPS solver with the CRVPINN solver - we used a single NVIDIA A100-SXM4-40GB GPU, pretrained for the initial state using 20,000 iterations (which takes 500 seconds). After that, we ran the training every 10 iterations of the IGA-ADS solver (we execute 100 iterations of the CRVPINN solver to compute the update of the pressure, which costs around 3-5 seconds). The total CRVPINN solver execution time on average is around 500 + 100 × 4 = 900 
+
+seconds. This is presented in Figure 19. For example, for the mesh dimensions of 
+
+128 2 for the IGA-ADS solver and the MUMPS solver, compared with 100 2 collocation points for the CRVPINN solver, the hybrid IGA-ADS solver coupled with the MUMPS 
+
+> 1Academic Computer Centre Cyfronet AGH https://www.cyfronet.pl
+
+26 solver takes a total of around 1200 seconds (saturation integration) plus 3800 seconds (pressure integration) plus 5800 seconds (pressure solver), totaling 10,800 seconds (see Figure 18). The initialization and saturation solver times are negligibly small. On the other hand, the IGA-ADS solver coupled with the CRVPINN solver takes a total of around 1200 seconds (saturation integration) plus around 1300 seconds (communication between the IGA-ADS and CRVPINN solvers) plus 900 seconds (CRVPINN solver), totaling 3,400 seconds. We compare 10,800 seconds with 3,400 seconds. Our IGA-ADS solver, coupled with the CRVPINN solver, is over 3 times faster. 
+
+9. Conclusions and Future Work 
+
+In this work, we have demonstrated some accuracy and timing results of our implementation of the CO 2 sequestration hybrid solver using the IGA-ADS and CRVPINN solver. The hybrid solver has shown capability in solving both simple (uniform permeability) and more complex (three realistic permeability maps) cases of the direct problem. It has also been able to handle the simulation well using a single node from the ARES supercomputer at ACK CYFRONET [ 20 ]. To be more specific, the 128 2 mesh size simulation was performed on 12 cores and used 24 GB of RAM, while the CRVPINN was run on a single NVIDIA-A100 GPU. We have also tested the scalability of the IGA-ADS solver on extremely low resources (some test simulations were performed on a laptop with an AMD Ryzen 5 5500 U CPU @ 2.1 GHz and only 10 GB of RAM). The CRVPINN solver can also run on the free version of Google Colab, which allows for the usage of our solver even without access to state-of-the-art computational resources. The sample results correspond to the expected behavior of the system, and the solver has been able to work with the parameter values given from the literature [ 15 , 16 ]. We have compared our hybrid IGA-ADS solver, coupled with the CRVPINN method, with a baseline of the IGA-ADS solver coupled with the MUMPS direct solver. Our hybrid solver is over 3 times faster on the computational node from the ARES cluster of ACK CYFRONET. Our future work will include the solution of the inverse problem: identifying the optimal location for the CO 2 injection well and the values of the adjustable parameters for a given reservoir. In the meantime, experiments on the H2 storage problem may also be conducted. As for the computational cost, we plan to work on lowering the cost of the communication between the IGA-ADS and CRVPINN solvers and further parallelizing the CRVPINN solver on several GPUs. Further improvement of the simulation quality can be obtained using hp -adaptive methods [ 21 , 22 ]. Future work may involve solving the inverse problem related to 27 identifying the optimal location for pumps. They can be solved using multi-deme, twin adaptive strategy methods [23, 24]. 
+
+10. Acknowledgements 
+
+The work of Askold Vilkha and Maciej Paszyński has received funding from the European Union’s Horizon Europe research and innovation programme under the Marie Sklodowska-Curie grant agreement No 101119556. We gratefully AcKnowledge the Polish high-performance computing infrastructure PLGrid (HPC Center: ACK Cyfronet AGH) for providing computer facilities and support within computational grants no. PLG/2024/017915, PLG/2024/017764, PLG/2025/018925. 
+
+Declaration of Generative AI and AI-assisted technologies in the writing process 
+
+During the preparation of this work, the author(s) used Gemini (Google) and ChatGPT to assist with writing, correcting English language usage, and improving text clarity and organization. After using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full responsibility for the content of the publication. 
+
+References 
+
+[1] Klaus S. Lackner. A Guide to CO2 Sequestration. Science , 300(5626):1677–1678, June 2003. Publisher: American Association for the Advancement of Science. [2] Sam Holloway. Storage of fossil fuel-derived carbon dioxide beneath the surface of the Earth. Annual Review of Environment and Resources , 26(Volume 26, 2001):145–166, November 2001. Publisher: Annual Reviews. [3] Karsten Pruess and Julio García. Multiphase flow dynamics during CO2 disposal into saline aquifers. Environmental Geology , 42(2):282–295, June 2002. [4] Osama Massarweh and Ahmad S. Abushaikha. CO2 sequestration in subsur-face geological formations: A review of trapping mechanisms and monitoring techniques. Earth-Science Reviews , 253:104793, June 2024. [5] Andreas Bielinski. Numerical simulation of CO 2 sequestration in geological formations . Number 155 in Mitteilungen / Institut für Wasserbau, Universität Stuttgart. Inst. f. Wasserbau, Stuttgart, 2007. 28 [6] Marcin M. Łoś, Maciej Woźniak, Maciej Paszyński, Andrew Lenharth, Muhamm Amber Hassaan, and Keshav Pingali. IGA-ADS: Isogeometric analysis FEM using ADS solver. Computer Physics Communications , 217:99–116, August 2017. [7] Marcin Łoś, Maciej Woźniak, Keshav Pingali, Luis Emilio Garcia Castillo, Julen Alvarez-Aramberri, David Pardo, and Maciej Paszyński. Fast parallel IGA-ADS solver for time-dependent Maxwell’s equations. Computers & Mathematics with Applications , 151:36–49, December 2023. [8] Leszek Siwik, Marcin Łoś, Adrian Kłusek, Witold Dzwinel, and Maciej Paszyński. Tuning Two-Dimensional Tumor Growth Simulations. In Proceedings of the 50th Computer Simulation Conference , University of Bordeaux, Bordeaux, France, 2018. Society for Modeling and Simulation International (SCS). [9] Marcin Łoś, Tomasz Służalec, Paweł Maczuga, Askold Vilkha, Carlos Uriarte, and Maciej Paszyński. Collocation-based robust variational physics-informed neural networks (CRVPINNs). Computers & Structures , 316:107839, September 2025. [10] Sergio Rojas, Paweł Maczuga, Judit Muñoz-Matute, David Pardo, and Maciej Paszyński. Robust variational physics-informed neural networks. Computer Methods in Applied Mechanics and Engineering , 425:116904, 2024. [11] Ehsan Kharazmi, Zhongqiang Zhang, and George E.M. Karniadakis. hp-vpinns: Variational physics-informed neural networks with domain decomposition. Com-puter Methods in Applied Mechanics and Engineering , 374:113547, 2021. [12] George Em Karniadakis, Ioannis G. Kevrekidis, Lu Lu, Paris Perdikaris, Sifan Wang, and Liu Yang. Physics-informed machine learning. Nature Reviews Physics , 3(6):422–440, June 2021. Publisher: Nature Publishing Group. [13] P.R. Amestoy, I. S. Duff, J. Koster, and J.-Y. L’Excellent. A fully asynchronous multifrontal solver using distributed dynamic scheduling. SIAM Journal on Matrix Analysis and Applications , 23(1):15–41, 2001. [14] P.R. Amestoy, A. Buttari, J.-Y. L’Excellent, and T. Mary. Performance and Scalability of the Block Low-Rank Multifrontal Factorization on Multicore Architectures. ACM Transactions on Mathematical Software , 45:2:1–2:26, 2019. 29 [15] Anozie Ebigbo, Holger Class, and Rainer Helmig. CO2 leakage through an abandoned well: problem-oriented benchmarks. Computational Geosciences ,11(2):103–115, June 2007. [16] Parisa Shokouhi, Vikas Kumar, Sumedha Prathipati, Seyyed A. Hosseini, Clyde Lee Giles, and Daniel Kifer. Physics-informed deep learning for prediction of CO 2 storage site response. Journal of Contaminant Hydrology , 241:103835, August 2021. [17] Nathan Collier, David Pardo, Lisandro Dalcin, Maciej Paszynski, and V.M. Calo. The cost of continuity: A study of the performance of isogeometric finite elements using direct solvers. Computer Methods in Applied Mechanics and Engineering ,213-216:353–361, 2012. [18] Diederik P. Kingma and Jimmy Ba. Adam: A method for stochastic optimization. In Yoshua Bengio and Yann LeCun, editors, ICLR (Poster) , 2015. [19] Ares cluster, https://docs.cyfronet.pl/spaces/˜plgpawlik/pages/110728307/ares. [20] Kazimierz Wiatr Marian Bubak, Jacek Kitowski. e-Science on distributed computing infrastructure. Achievements of plgrid plus domain-specific services and tools. Lecture Notes in Computer Science , (8500), 2014. [21] Maciej Paszyński. On the parallelization of self-adaptive hp-finite element methods part i. composite programmable graph grammar model. Fundamenta Informaticae , 93(4):411–434, 2009. [22] Maciej Paszyński. On the parallelization of self-adaptive hp-finite element methods part ii. partitioning communication agglomeration mapping (pcam) analysis. Fundamenta Informaticae , 93(4):435–457, 2009. [23] Barbara Barabasz, Stanisław Migórski, Robert Schaefer, and Maciej Paszyński. Multi-deme, twin adaptive strategy hp-hgs. Inverse Problems in Science and Engineering , 19(1):3–16, 2011. [24] Ewa Gajda-Zagórska, Robert Schaefer, Maciej Smołka, Maciej Paszyński, and David Pardo. A hybrid method for inversion of 3d dc resistivity logging mea-surements. Natural computing , 14(3):355–374. 30 (a) Configuration K1 
+
+(b) Configuration K2 
+
+(c) Configuration K3 
+
+Figure 16: CRVPINN loss for uniform permeabil-ity field 
+
+(a) Configuration K1 
+
+(b) Configuration K2 
+
+(c) Configuration K3 
+
+Figure 17: CRVPINN loss for non-uniform per-meability maps 
+
+31 Figure 18: Execution times for IGA-ADS solver for saturation coupled with MUMPS solver executed every 10 time steps for the pressure. Mesh dimensions for both IGA-ADS and CRVPINN vary from 
+
+32 2, 64 2, 96 2, up to 128 2. Quadratic B-splines with C1 continuity. 
+
+32 Figure 19: Execution times for IGA-ADS solver for saturation coupled with CVPINN solver executed every 10 time steps for the pressure. Mesh dimensions for IGA-ADS varying from 32 2, 64 2, 96 2,up to 128 2. Quadratic B-splines with C1 continuity. The number of collocation points for the CRVPINN solver is always 100 2.
+
+33

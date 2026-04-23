@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-001.webp",
+      "caption": "TABLE III. Dam break simulations presenting different parameter values of the available features in IMEX related to pore pressure dissipation in thin flows. The third column specifies if the initial column has excess pore pressure. The fourth column specifies if the permeability is kept constant (Const.) or varies as a function of porosity (Dyn.). The fifth column indicates what inhibit factor modality is input to the software: step function (’STEP’), smooth function with fixed transition beginning (’STATIC’), and smooth function with transition beginning depending on flow height (’DYNAMIC’).",
+      "page": 43,
+      "index": 1,
+      "width": 688,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-002.webp",
+      "caption": "FIG. 12. Contour map of the normalized diffusivity ratio Dfit/Dpred for gas–particle beds in air, showing how compaction modifies the effective drainage rate. The horizontal axis ΠH = β0(1 − ε0)ρsgH0 is a dimensionless measure of bed thickness that captures the pressure loading relative to gas compressibility. The vertical axis A = ∆ε/[ε0(1 − ε0)] represents the magnitude of porosity change relative to the available pore volume. Blue regions correspond to diffusiondominated conditions where Dfit ≈Dpred, while red zones denote compaction-dominated regimes where drainage is increasingly inhibited.",
+      "page": 47,
+      "index": 2,
+      "width": 664,
+      "height": 464
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-003.webp",
+      "caption": "FIG. 6. Ψ0-based algebraic correction for effective diffusivity. (a) Diffusivity versus bed height (logarithmic x-axis) showing Dpred (gray dashed), MFIX-fitted Dfit for n = 1 (orange squares) and n = 10 (dark red circles), and predictions from Eq. (62) using the n = 10 fit (purple solid line). (b) Parity plot demonstrating excellent correlation (R2 = 0.991) between predicted DΨ and MFIXfitted Dfit diffusivities for n = 10 modes. (c) The correction factor Dfit/Dpred versus Ψ0 on a log scale, showing the algebraic decay. Data points (dark red circles) are from MFIX-TFM simulations with n = 10 modal reconstruction; the purple curve is the fitted power law 1/(1 + 1.5637Ψ1.0392",
+      "page": 30,
+      "index": 3,
+      "width": 959,
+      "height": 280
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-004.webp",
+      "caption": "TABLE I. Constants used with the Srivastava friction model in MFIX.",
+      "page": 7,
+      "index": 4,
+      "width": 860,
+      "height": 567
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-005.webp",
+      "caption": "FIG. 8. The classical µ(I) model is shown in blue [23]. The partially regularised µ(I) proposed by [26], only for I > IN1 , is shown in orange. IN1 is the stability neutral number and Io is the characteristic inertial number.",
+      "page": 39,
+      "index": 5,
+      "width": 570,
+      "height": 415
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-006.webp",
+      "caption": "FIG. 4. Convergence of the Fourier-series reconstruction of the basal excess pressure for a 1.0m bed with Pb0 = 10 kPa and D = 0.01m2 s−1. The modal coefficients are normalised so that Pb(t=0) = Pb0. The reference curve (n = 104) is shown in black; successive truncations (n = 1–20) rapidly approach it, with mean relative error below 2% for n ≥ 5 over the short-time interval.",
+      "page": 22,
+      "index": 6,
+      "width": 963,
+      "height": 253
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-007.webp",
+      "caption": "FIG. 7. Representation of the inhibit factor, finhibit, which accounts for the hindered gas loss and associated pore pressure dissipation as the solid concentration (α) approaches the maximum packing fraction (αmax). finhibit is calculated from the smooth step function Sn(α), Eq. (70) and (71), which enables a smooth transition between completely unhindered to completely inhibited gas loss and pressure dissipation. The transition starts at αtr (dash-dotted line) and ends at αmax (dashed line). The smoothness of the transition is given by N , the degree of the polynomial in Sn(α).",
+      "page": 34,
+      "index": 7,
+      "width": 563,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-008.webp",
+      "caption": "FIG. 1. One-dimensional MFIX-TFM simulations of a 0.4m thick bed of glass beads (deq = 75 µm) in air for various superficial velocities. (a) Basal pore pressure as a function of time. (b) Depthaveraged concentration of the bed. (c) Fractional excess pore pressure. (d) Permeability estimates using the Ergun equation. Each data point represents a single simulation at steady state.",
+      "page": 10,
+      "index": 8,
+      "width": 960,
+      "height": 675
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-009.webp",
+      "caption": "FIG. 10. IMEX simulations reproducing the dam break experiment presented in [10, 13, 14] for an initial column height of 0.40m. These simulations compute finhibit using the empirical relation αtr(h) shown in Figure 9.g. (a) Flow profiles at different times from the dam break for an initial solid fraction of the granular column of 0.57. The runout distances of the flow of thickness greater than 3.5mm yielded by IMEX and that reported by [14] for an initial solid fraction of 0.58 are marked by the red and grey dashed lines, respectively. (b) Final flow profiles corresponding to initial granular columns of 0.4m height with different solid fractions (αo).",
+      "page": 42,
+      "index": 9,
+      "width": 958,
+      "height": 506
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-010.webp",
+      "caption": "FIG. 2. Comparison between the 1-D diffusion-only solver (no dilatancy, ∂ε/∂t = 0) and MFIXTFM simulations for the same bed height and permeability. Basal excess pore pressure decays exponentially with the fundamental mode predicted from D = k/(µgβε), demonstrating that the 1-D model reproduces the pure-diffusion limit.",
+      "page": 18,
+      "index": 10,
+      "width": 575,
+      "height": 957
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-011.webp",
+      "caption": "FIG. 11. Simulations to showcase the effect on flow dynamics of a range of features available in IMEX SfloW2D v2 related to pore pressure dissipation in thin flows. Each row corresponds to a simulation in Table III. The first column shows the flow profile at the last time step. The second column presents the relative solid phase concentration along the flow profile, with respect to the initial granular column ( α(t)",
+      "page": 44,
+      "index": 11,
+      "width": 960,
+      "height": 736
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-012.webp",
+      "caption": "FIG. 9. (a-f) Diffusion of basal excess pore pressure (Pexc,b) in a static fluidised column of various heights (Ho) with time, where t∗ = 0 is the time at which the upward supply of air stops. The diffusion yielded by MFIX-TFM simulations is shown in blue. The green dotted line corresponds to the first mode of the diffusion (only) analytical solution (Eq. (40)). The diffusion evolution curve yielded from IMEX, accounting for inhibition as the solid fraction approaches maximum packing, is shown in the orange dash line. The αtr, as per Eq. (71), to obtain a diffusion curve with the lowest residual sum of squares with respect to the MFIX-TFM diffusion curve is printed in the upper right corner of the subplots. (g) Best-fitting αtr for a range of initial static column heights (dots coloured by Ho), alongside the corresponding best-fitting power-law trend (black dashed line), in turn, printed on the upper left corner of the subplot.",
+      "page": 41,
+      "index": 12,
+      "width": 958,
+      "height": 602
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-013.webp",
+      "caption": "FIG. 5. Porosity change ∆ε = ε(t∗ = H0)− εend as a function of initial bed height H0 from MFIXTFM simulations. Thin beds compact appreciably during drainage, while thick beds remain nearly rigid. This behaviour motivates the empirical scaling in Eq. (58).",
+      "page": 27,
+      "index": 13,
+      "width": 568,
+      "height": 344
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18462v1/fig-014.webp",
+      "caption": "FIG. 3. Comparison between MFIX–TFM basal excess pore pressure and reduced 1-D models for several bed heights. Each row shows (a) MFIX-TFM data with Fourier-series reconstructions using Dpred and the fitted Dfit; (b) 1-D solver forced with different MFIX-derived porosity histories (depth-averaged, basal, bottom 20%, and exponential fit); (c) corresponding concentration/porosity signals from MFIX-TFM together with the exponential fit used to clean the source term; and (d) separation of the 1-D solution into diffusion-only and compaction/source contributions, whose sum matches the total pressure. The excellent overlap obtained when the solver is driven by the exponential porosity demonstrates that a simple two-parameter compaction law is sufficient to reproduce the MFIX-TFM pressure decay across bed thicknesses.",
+      "page": 20,
+      "index": 14,
+      "width": 809,
+      "height": 1097
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-001.webp",
+      "caption": "Figure 8: Statistical distribution of inference error. (a) Empirical cumulative distribution function (ECDF) for pressure inference errors. (b) ECDF for permeability inference errors. (c) Histogram of pressure errors. (d) Histogram of permeability errors. (e) Box plot comparison of model performance (Left axis: Pressure MSE; Right axis: Permeability 𝐿2 Error). (f) Relative error scatter between physics-informed and data-driven inference. These plots confirm that the physics-informed model performs more accurately in pressure inference while maintaining comparable accuracy in permeability inference.",
+      "page": 11,
+      "index": 1,
+      "width": 837,
+      "height": 487
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-002.webp",
+      "caption": "Figure 12: Comparison of pressure inference errors in the rare event regime. Models trained only on bulk data (tBeR) show significantly higher error, while incorporating rare event samples into training reduces error for both approaches. The physics-informed model achieves the largest improvement and maintains strong accuracy even when trained solely on rare event data (tReR).",
+      "page": 15,
+      "index": 2,
+      "width": 827,
+      "height": 341
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-003.webp",
+      "caption": "Figure 2: Training method for the data-driven model, which shows the method for NN model training using only precomputed permeability-pressure pairs without consideration of any physical constraint.",
+      "page": 7,
+      "index": 3,
+      "width": 467,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-004.webp",
+      "caption": "Figure 3: Method for the physics-informed learning, where the NN model learn from both pressure and permeability miss match having a differentiable simulator within the training loop.",
+      "page": 7,
+      "index": 4,
+      "width": 591,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-005.webp",
+      "caption": "Figure 6: Evaluation of the trained model. (a) Pressure inference error from the data-driven model; (b) pressure inference error from the physics-informed model. The data-driven model produces significantly higher error value in matching the true pressure field.",
+      "page": 10,
+      "index": 5,
+      "width": 813,
+      "height": 458
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-006.webp",
+      "caption": "Figure 7: Evaluation of the trained model. (a) Permeability inference error from the data-driven model; (b) permeability inference error from the physics-informed model. The error differences are insignificant, however, the physics-informed model provides a slightly better permeability inference.",
+      "page": 10,
+      "index": 6,
+      "width": 801,
+      "height": 209
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-007.webp",
+      "caption": "Figure 11: Generation of rare-event samples. (a) Location of the critical point. (b) Distribution of pressure at the critical location based on 10,000 random permeability samples. Samples which result in pressures above the prescribed threshold value of 1.285 MPa (top 1%) are selected as rare events.",
+      "page": 14,
+      "index": 7,
+      "width": 825,
+      "height": 372
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-008.webp",
+      "caption": "Figure 9: Comparison of estimated error in inferred pressure between the physics-informed and data-driven model for the eight data scenarios shows the physics-informed model infers pressure with higher accuracy in every scenario.",
+      "page": 13,
+      "index": 8,
+      "width": 827,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-009.webp",
+      "caption": "Figure 10: Comparison of permeability inference errors between the physics-informed and data-driven models for the eight data scenario shows the physics-informed model perform with similar accuracy in permeability inference despite accounting pressure loss in learning.",
+      "page": 13,
+      "index": 9,
+      "width": 829,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-010.webp",
+      "caption": "Figure 4: Training and and validation errors for the physics-informed and data-driven model in base case scenario. (a) Training errors, (b) validation errors. The lower training errors for the data-driven model is the result of having only the permeability error in the loss calculation.",
+      "page": 8,
+      "index": 10,
+      "width": 834,
+      "height": 337
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-011.webp",
+      "caption": "Table 2: Parameters used in the physics-based model.",
+      "page": 8,
+      "index": 11,
+      "width": 506,
+      "height": 256
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-012.webp",
+      "caption": "Figure 1: Simulation domain used for the reservoir characterization method with monitoring points in red and a heterogeneous permeability field in the background. The trained NN model model infers the permeability of the field from the pressure values at the monitoring points.",
+      "page": 4,
+      "index": 12,
+      "width": 433,
+      "height": 319
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-013.webp",
+      "caption": "Table 4: Comparison of inference accuracy for the physics-informed and data-driven models in variable data conditions.",
+      "page": 12,
+      "index": 13,
+      "width": 717,
+      "height": 231
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13291v1/fig-014.webp",
+      "caption": "Figure 5: Pressure and permeability errors from the validation data. (a) Permeability errors is approximately the same for the data-driven and physics-informed models towards the end of the training (b) pressure error is lower in the physics-informed approach as it accounts for the pressure mismatch in the loss function.",
+      "page": 9,
+      "index": 14,
+      "width": 836,
+      "height": 338
+    }
+  ]
+}

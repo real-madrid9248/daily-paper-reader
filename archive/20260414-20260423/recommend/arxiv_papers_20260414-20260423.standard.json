@@ -1,0 +1,248 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-23T07:28:48.670446+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2604.13291v1",
+      "source": "arxiv",
+      "title": "Physics-informed reservoir characterization from bulk and extreme pressure events with a differentiable simulator",
+      "abstract": "Accurate characterization of subsurface heterogeneity is challenging but essential for applications such as reservoir pressure management, geothermal energy extraction and CO$_2$, H$_2$, and wastewater injection operations. This challenge becomes especially acute in extreme pressure events, which are rarely observed but can strongly affect operational risk. Traditional history matching and inversion techniques rely on expensive full-physics simulations, making it infeasible to handle uncertainty and extreme events at scale. Purely data-driven models often struggle to maintain physics consistency when dealing with sparse observations, complex geology, and extreme events. To overcome these limitations, we introduce a physics-informed machine learning method that embeds a differentiable subsurface flow simulator directly into neural network training. The network infers heterogeneous permeability fields from limited pressure observations, while training minimizes both permeability and pressure losses through the simulator, enforcing physical consistency. Because the simulator is used only during training, inference remains fast once the model is learned. In an initial test, the proposed method reduces the pressure inference error by half compared with a purely data-driven approach. We then extend the test over eight distinct data scenarios, and in every case, our method produces significantly lower pressure inference errors than the purely data-driven model. We also evaluate our method on extreme events, which represent high-consequence data in the tail of the sample distribution. Similar to the bulk distribution, the physics-informed model maintains higher pressure inference accuracy in the extreme event regimes. Overall, the proposed method enables rapid, physics-consistent subsurface inversion for real-time reservoir characterization and risk-aware decision-making.",
+      "authors": [
+        "Harun Ur Rashid",
+        "Mingxin Li",
+        "Aleksandra Pachalieva",
+        "Georg Stadler",
+        "Daniel O'Malley"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-14T20:52:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.13291v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "subsurface characterization for H2 injection operations",
+      "llm_evidence_cn": "氢气注入作业的地下表征",
+      "llm_evidence": "氢气注入作业的地下表征",
+      "canonical_evidence": "氢气注入作业的地下表征",
+      "llm_tldr_en": "Introduces a differentiable simulator for subsurface characterization, directly applicable to H2 storage.",
+      "llm_tldr_cn": "引入了一种用于地下表征的可微模拟器，可直接应用于氢气储存。",
+      "llm_tldr": "引入了一种用于地下表征的可微模拟器，可直接应用于氢气储存。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "geological hydrogen storage in salt formations",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.20007v1",
+      "source": "arxiv",
+      "title": "The evolution of a gas plume injected into a curved axisymmetric porous channel",
+      "abstract": "We investigate gas injection into water-saturated porous channels with Gaussian and parabolic axisymmetric centrelines, as idealized models of underground gas storage in dome-shaped anticlines. Exploiting the slenderness of each channel, we derive an evolution equation for the gas/liquid interface using a composite asymptotic approximation that accommodates large channel slopes and has a simplified small-slope form describing spreading in weakly curved channels. In the high gas-mobility limit, in contrast with flat planar channels, buoyancy influences the dynamics through different mechanisms in each geometry. For gas injected steadily into a Gaussian channel, buoyancy can continually affect the flow due to the attenuation of the gas velocity caused by axisymmetry. In parabolic channels, the increasing channel slope ensures that buoyancy eventually influences the flow, at a timescale depending on injection rate and fluid properties. Asymptotic analysis of the parabolic channel flow reveals five temporal regimes, each with multiple spatial regions and a distinct spreading rate, reflecting the evolving spatiotemporal competition between injection and buoyancy. Initially, a thin film of gas spreads along the upper boundary; the channel slope and elongation of the film then generate a hydrostatic pressure gradient, which strengthens until buoyancy arrests the upper contact line and thickens the film. Beneath the film, liquid then drains until the interface flattens under buoyancy. Analytical solutions of reduced-order models capture interface evolution and contact-line motion through each regime and are validated against full numerical simulations. These results have implications for subsurface hydrogen and CO$_2$ storage, where a horizontal interface that advances vertically enhances both safety and storage efficiency.",
+      "authors": [
+        "Peter Castellucci",
+        "Radha Boya",
+        "Lin Ma",
+        "Igor L. Chernyavsky",
+        "Oliver E. Jensen"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-21T21:34:06+00:00",
+      "link": "https://arxiv.org/pdf/2604.20007v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 8.5,
+      "llm_evidence_en": "idealized models of underground gas storage in dome-shaped geological structures",
+      "llm_evidence_cn": "穹顶状地质结构中地下储气的理想化模型",
+      "llm_evidence": "穹顶状地质结构中地下储气的理想化模型",
+      "canonical_evidence": "穹顶状地质结构中地下储气的理想化模型",
+      "llm_tldr_en": "Models gas plume evolution in porous channels as an analog for underground gas storage in anticlines.",
+      "llm_tldr_cn": "模拟多孔通道中的气体羽流演化，作为背斜构造地下储气的理想化模型。",
+      "llm_tldr": "模拟多孔通道中的气体羽流演化，作为背斜构造地下储气的理想化模型。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "underground hydrogen storage technologies",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.15407v1",
+      "source": "arxiv",
+      "title": "SHIELD: A Reference Gas-Driven Permeation Platform for Hydrogen Permeation Studies",
+      "abstract": "A gas-driven permeation (GDP) platform, SHIELD (Salt-compatible Hydrogen barrier Investigation and EvaLuation for fusion Devices), has been developed to measure hydrogen transport properties in structural materials under controlled thermal and pressure conditions. The system is designed to minimise experimental uncertainties associated with leaks, temperature instability, and pressure measurement, while providing reproducible conditions for permeation experiments. The rig operates in a static GDP configuration with independent upstream and downstream volumes, enabling precise control of driving pressure and accurate measurement of downstream pressure rise. An openly documented data acquisition and processing framework is implemented to ensure data traceability and reproducibility. The platform's performance is demonstrated by hydrogen permeation measurements on 316 stainless steel and AISI 1018 low-carbon steel over the temperature range of \\SIrange{100}{600}{\\degreeCelsius}. Steady-state permeation fluxes are extracted from linear downstream pressure rise and used to determine permeability. The measured permeability exhibits Arrhenius behaviour and agrees well with published literature data for both materials. Permeability measurements are shown to be robust and reproducible. These results demonstrate that SHIELD provides a reliable reference platform for hydrogen permeation measurements and is well-suited to evaluating permeation barrier coatings and advanced materials for fusion applications.",
+      "authors": [
+        "James Dark",
+        "Colin Weaver",
+        "Remi Delaporte-Mathurin",
+        "Sara Ferry",
+        "Kevin B. Woller"
+      ],
+      "primary_category": "physics.ins-det",
+      "categories": [
+        "physics.ins-det",
+        "cond-mat.mtrl-sci"
+      ],
+      "published": "2026-04-16T15:41:10+00:00",
+      "link": "https://arxiv.org/pdf/2604.15407v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Salt-compatible Hydrogen barrier Investigation and EvaLuation",
+      "llm_evidence_cn": "盐穴兼容的氢阻隔层研究与评估",
+      "llm_evidence": "盐穴兼容的氢阻隔层研究与评估",
+      "canonical_evidence": "盐穴兼容的氢阻隔层研究与评估",
+      "llm_tldr_en": "A platform for studying hydrogen permeation and transport properties in salt-compatible materials.",
+      "llm_tldr_cn": "一个用于研究盐穴兼容材料中氢渗透和传输特性的平台。",
+      "llm_tldr": "一个用于研究盐穴兼容材料中氢渗透和传输特性的平台。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "salt cavern hydrogen storage research",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.13992v1",
+      "source": "arxiv",
+      "title": "Physics-Informed Neural Networks for Methane Sorption: Cross-Gas Transfer Learning, Ensemble Collapse Under Physics Constraints, and Monte Carlo Dropout Uncertainty Quantification",
+      "abstract": "Accurate methane sorption prediction across heterogeneous coal ranks requires models that combine thermodynamic consistency, efficient knowledge transfer across data-scarce geological systems, and calibrated uncertainty estimates, capabilities that are rarely addressed together in existing frameworks. We present a physics-informed transfer learning framework that adapts a hydrogen sorption PINN to methane sorption prediction via Elastic Weight Consolidation, coal-specific feature engineering, and a three-phase curriculum that progressively balances transfer preservation with thermodynamic fine-tuning. Trained on 993 equilibrium measurements from 114 independent coal experiments spanning lignite to anthracite, the framework achieves R2 = 0.932 on held-out coal samples, a 227% improvement over pressure-only classical isotherms, while hydrogen pre-training delivers 18.9% lower RMSE and 19.4% faster convergence than random initialization. Five Bayesian uncertainty quantification approaches reveal a systematic divergence in performance across physics-constrained architectures. Monte Carlo Dropout achieves well-calibrated uncertainty at minimal overhead, while deep ensembles, regardless of architectural diversity or initialization strategy, exhibit performance degradation because shared physics constraints narrow the admissible solution manifold. SHAP and ALE analyses confirm that learned representations remain physically interpretable and aligned with established coal sorption mechanisms: moisture-volatile interactions are most influential, pressure-temperature coupling captures thermodynamic co-dependence, and features exhibit non-monotonic effects. These results identify Monte Carlo Dropout as the best-performing UQ method in this physics-constrained transfer learning framework, and demonstrate cross-gas transfer learning as a data-efficient strategy for geological material modeling.",
+      "authors": [
+        "Mohammad Nooraiepour",
+        "Zezhang Song",
+        "Wei Li",
+        "Sarah Perez"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-15T15:35:44+00:00",
+      "link": "https://arxiv.org/pdf/2604.13992v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "adapts a hydrogen sorption PINN to geological systems",
+      "llm_evidence_cn": "将氢吸附物理信息神经网络应用于地质系统",
+      "llm_evidence": "将氢吸附物理信息神经网络应用于地质系统",
+      "canonical_evidence": "将氢吸附物理信息神经网络应用于地质系统",
+      "llm_tldr_en": "A physics-informed neural network framework for predicting gas sorption in geological formations.",
+      "llm_tldr_cn": "一种用于预测地质地层中气体吸附的物理信息神经网络框架。",
+      "llm_tldr": "一种用于预测地质地层中气体吸附的物理信息神经网络框架。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "underground hydrogen storage technologies",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.18462v1",
+      "source": "arxiv",
+      "title": "Diffusion compaction coupling controls pore pressure dynamics in granular fluid flows",
+      "abstract": "Excess pore pressure in granular--fluid mixtures can transiently suppress frictional contacts and dramatically enhance flow mobility, yet its evolution is commonly modeled using constant effective diffusivities. Here we show that the apparent diffusivity is not intrinsic but emerges from the coupling between pore-pressure diffusion and granular compaction.   Starting from two-phase mass conservation for a deformable, gas-saturated granular assembly, we derive an evolution equation for excess pore pressure that captures deformation of the granular skeleton. In the thin-flow, small-excess-pressure limit, this reduces to a one-dimensional diffusion--compaction equation with a time-dependent source term controlled by porosity changes.   A modal analysis yields a reduced basal equation that separates diffusive drainage from compaction-driven forcing and identifies the corresponding timescales. This framework introduces a dimensionless source-to-diffusion ratio, $Ψ_0$, which governs the competition between these processes and collapses effective diffusivities obtained from high-resolution two-fluid simulations over nearly two orders of magnitude in bed height. This scaling implies that the apparent diffusivity, and thus flow mobility, is not intrinsic but depends on flow thickness through the competition between diffusion and compaction.   Incorporating this physics into a depth-averaged model demonstrates that the resulting closure reproduces the thickness dependence of pore-pressure decay and runout observed in experiments. These results provide a physically grounded description of pore-pressure evolution in granular--fluid flows and clarify how diffusion--compaction coupling controls their mobility.",
+      "authors": [
+        "Eric C. P. Breard",
+        "Claudia Elijas Parra",
+        "Mattia de' Michieli Vitturi"
+      ],
+      "primary_category": "cond-mat.soft",
+      "categories": [
+        "cond-mat.soft",
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-20T16:17:56+00:00",
+      "link": "https://arxiv.org/pdf/2604.18462v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "pore pressure dynamics in gas-saturated granular assemblies",
+      "llm_evidence_cn": "气体饱和颗粒组合体中的孔隙压力动力学",
+      "llm_evidence": "气体饱和颗粒组合体中的孔隙压力动力学",
+      "canonical_evidence": "气体饱和颗粒组合体中的孔隙压力动力学",
+      "llm_tldr_en": "Models pore pressure in gas-saturated media, relevant to the geomechanics of underground gas storage.",
+      "llm_tldr_cn": "模拟气体饱和介质中的孔隙压力，与地下储气库的岩石力学研究相关。",
+      "llm_tldr": "模拟气体饱和介质中的孔隙压力，与地下储气库的岩石力学研究相关。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "underground hydrogen storage technologies",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.20731v1",
+      "source": "arxiv",
+      "title": "CO$_2$ sequestration hybrid solver using isogeometric alternating-directions and collocation-based robust variational physics informed neural networks (IGA-ADS-CRVPINN)",
+      "abstract": "This paper presents the hybrid solver for a $CO_2$ sequestration problem. The solver uses the IGA-ADS (IsoGeometric Analysis Alternating Directions solver) to compute the saturation scalar field update using the explicit method, and CRVPINN (Collocation-based Robust Variational Physics Informed Neural Networks solver) to compute the pressure scalar field. The study focuses on simulating the physical behavior of $CO_2$ in porous structures, excluding chemical reactions. The mathematical model is based on Darcy's Law. The CRVPINN is pretrained on the initial pressure configuration, and the time step pressure updates require only 100 iterations of the Adam method per time step. We compare our hybrid IGA-ADS solver, coupled with the CRVPINN method, with a baseline of the IGA-ADS solver coupled with the MUMPS direct solver. Our hybrid solver is over 3 times faster on a single computational node from the ARES cluster of ACK CYFRONET. Future work includes extensive testing, inverse problem solving, and potential application to $H_2$ storage problems.",
+      "authors": [
+        "Askold Vilkha",
+        "Tomasz Służalec",
+        "Marcin Łoś",
+        "Maciej Paszyński"
+      ],
+      "primary_category": "math.NA",
+      "categories": [
+        "math.NA",
+        "cs.NE"
+      ],
+      "published": "2026-04-22T16:16:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.20731v1",
+      "tags": [
+        "keyword:盐穴储氢",
+        "query:盐穴储氢"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "CO2 sequestration in porous structures and geological modeling",
+      "llm_evidence_cn": "多孔结构中的二氧化碳封存与地质建模",
+      "llm_evidence": "多孔结构中的二氧化碳封存与地质建模",
+      "canonical_evidence": "多孔结构中的二氧化碳封存与地质建模",
+      "llm_tldr_en": "Develops a hybrid solver for geological gas sequestration, providing methods transferable to hydrogen storage.",
+      "llm_tldr_cn": "开发用于地质气体封存的混合求解器，其方法可迁移至储氢研究。",
+      "llm_tldr": "开发用于地质气体封存的混合求解器，其方法可迁移至储氢研究。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "geological hydrogen storage in salt formations",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

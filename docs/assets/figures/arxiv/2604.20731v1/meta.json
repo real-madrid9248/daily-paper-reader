@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-001.webp",
+      "caption": "Figure 14: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K3 with permeability map.",
+      "page": 25,
+      "index": 1,
+      "width": 898,
+      "height": 741
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-002.webp",
+      "caption": "Figure 4: CO2 saturation evolution for configuration K2 with uniform permeability at different time steps.",
+      "page": 15,
+      "index": 2,
+      "width": 552,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-003.webp",
+      "caption": "Figure 10: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K2 with uniform permeability.",
+      "page": 21,
+      "index": 3,
+      "width": 898,
+      "height": 750
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-004.webp",
+      "caption": "Figure 11: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K3 with uniform permeability.",
+      "page": 22,
+      "index": 4,
+      "width": 898,
+      "height": 753
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-005.webp",
+      "caption": "Figure 3: CO2 saturation evolution for configuration K1 with uniform permeability at different time steps.",
+      "page": 14,
+      "index": 5,
+      "width": 552,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-006.webp",
+      "caption": "Figure 19: Execution times for IGA-ADS solver for saturation coupled with CVPINN solver executed every 10 time steps for the pressure. Mesh dimensions for IGA-ADS varying from 322, 642, 962, up to 1282. Quadratic B-splines with C1 continuity. The number of collocation points for the CRVPINN solver is always 1002.",
+      "page": 33,
+      "index": 6,
+      "width": 898,
+      "height": 531
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-007.webp",
+      "caption": "Figure 7: CO2 saturation evolution for configuration K2 with non-uniform permeability at different time steps.",
+      "page": 18,
+      "index": 7,
+      "width": 552,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-008.webp",
+      "caption": "Figure 12: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K1 with permeability map.",
+      "page": 23,
+      "index": 8,
+      "width": 898,
+      "height": 742
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-009.webp",
+      "caption": "Figure 8: CO2 saturation evolution for configuration K3 with non-uniform permeability at different time steps.",
+      "page": 19,
+      "index": 9,
+      "width": 552,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-010.webp",
+      "caption": "Figure 6: CO2 saturation evolution for configuration K1 with non-uniform permeability at different time steps.",
+      "page": 17,
+      "index": 10,
+      "width": 552,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-011.webp",
+      "caption": "Figure 18: Execution times for IGA-ADS solver for saturation coupled with MUMPS solver executed every 10 time steps for the pressure. Mesh dimensions for both IGA-ADS and CRVPINN vary from 322, 642, 962, up to 1282. Quadratic B-splines with C1 continuity.",
+      "page": 32,
+      "index": 11,
+      "width": 898,
+      "height": 531
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-012.webp",
+      "caption": "Figure 1: Porosity distributions for three different reservoir configurations. The values range from 0 to 1.",
+      "page": 12,
+      "index": 12,
+      "width": 898,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-013.webp",
+      "caption": "Figure 2: Permeability distributions for three different reservoir configurations. The units are in mDarcy, in simulation we use SI units (1 mDarcy ≃ 10−15 m2).",
+      "page": 12,
+      "index": 13,
+      "width": 898,
+      "height": 198
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-014.webp",
+      "caption": "Figure 13: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K2 with permeability map.",
+      "page": 24,
+      "index": 14,
+      "width": 898,
+      "height": 745
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-015.webp",
+      "caption": "Figure 16: CRVPINN loss for uniform permeability field",
+      "page": 31,
+      "index": 15,
+      "width": 352,
+      "height": 966
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-016.webp",
+      "caption": "Figure 17: CRVPINN loss for non-uniform permeability maps",
+      "page": 31,
+      "index": 16,
+      "width": 352,
+      "height": 966
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-017.webp",
+      "caption": "Figure 9: CRVPINN pressure solution comparison with IGA-ADS solver for configuration K1 with uniform permeability.",
+      "page": 20,
+      "index": 17,
+      "width": 898,
+      "height": 754
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20731v1/fig-018.webp",
+      "caption": "Figure 5: CO2 saturation evolution for configuration K3 with uniform permeability at different time steps.",
+      "page": 16,
+      "index": 18,
+      "width": 552,
+      "height": 1058
+    }
+  ]
+}

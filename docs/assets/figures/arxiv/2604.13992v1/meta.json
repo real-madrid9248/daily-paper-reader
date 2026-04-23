@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-001.webp",
+      "caption": "Figure 6: Three-phase training curriculum achieves stable, non-overfitting convergence in 1,129 epochs, with Phase 1 warmup providing the dominant performance gain. (A) Total training and validation loss on symmetric log scale; phases color-coded as warmup (orange), fine-tuning (red), full optimization (green). (B) Validation R 2 (log space) exceeds 0.90 at epoch 340 and stabilizes above 0.94 after epoch 900 (green zone). (C) Validation RMSE decreasing from 0.67 to 0.153. (D) Learning rate schedule: discrete phase drops at epochs 500 and 900, with ReduceLROnPlateau adaptive decay within phases. (E) Instantaneous learning speed (negative loss gradient magnitude). (F) R 2 acceleration: maximum gain concentrated in mid-warmup (epochs 200–400), confirming the value of frozen-encoder feature alignment. (G) Generalization gap (train R 2 − val R 2 ) remains below 2% throughout all phases, confirming the absence of overfitting. (H) Phase-specific R 2 contributions: warmup +0.817, fine-tuning +0.005, full optimization +0.032; no phase is redundant.",
+      "page": 25,
+      "index": 1,
+      "width": 915,
+      "height": 548
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-002.webp",
+      "caption": "Figure 7: The transfer-learned PINN achieves R2 = 0.932 on held-out coals with near-Gaussian, unbiased residuals across the full rank spectrum. (A) Training predictions in log-transformed space (R 2 = 0.964, RMSE= 0.131, 𝑛 = 794). (B) Test predictions in log space (R 2 = 0.953, RMSE= 0.153, 𝑛 = 199), showing tight clustering around the 1:1 line with Δ𝑅2 < 0.011 between train and test, confirming generalization rather than memorization. (C) Test predictions back-transformed to original scale (R 2 = 0.932, RMSE= 2.29 m 3 /t), spanning low-capacity lignites (∼1–5 m 3 /t) to high-capacity anthracites (∼30–40 m 3 /t) without systematic rank-dependent bias. (D) Residual distributions (training: blue; test: purple) are near-Gaussian and centered at zero. (E) Absolute error versus true capacity: mild residual heteroscedasticity at high capacities is effectively managed by the log transformation. (F) Relative error distribution: median 2.27%, mean 5.2%, demonstrating high precision across the majority of coal conditions.",
+      "page": 26,
+      "index": 2,
+      "width": 911,
+      "height": 619
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-003.webp",
+      "caption": "Figure 2: Physics-informed engineered features span physically meaningful ranges and encode domain-specific thermodynamic and compositional structure. Histograms with kernel density estimates. (A) Reduced temperature 𝑇𝑟 = 𝑇/𝑇𝑐 and (B) reduced pressure 𝑃𝑟 = 𝑃/𝑃𝑐 locate each experiment relative to the methane critical point, enabling dimensionless thermodynamic representation. (C) Fixed carbon FC= 100− Moisture − Ash − VM concentrates in the 40–80 wt.% range characteristic of the bituminous coal majority. (D) Organic matter OM= (VM + FC)/100 directly quantifies the sorption-active fraction. (E) Thermodynamic coupling 𝛽 = 1/(𝑅𝑇) varies smoothly across the temperature range, encoding the Arrhenius energy scale. (F) Pressure-temperature product 𝑃 × 𝑇 captures joint thermodynamic state dependence consistent with the Gibbs adsorption equation. The physically sensible distributions of all engineered features confirm their suitability as network inputs.",
+      "page": 21,
+      "index": 3,
+      "width": 909,
+      "height": 599
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-004.webp",
+      "caption": "Figure 9: H2 transfer learning outperforms all baselines in accuracy, calibration, and convergence speed, while deep ensembles provide no benefit over a single physics-constrained model. All variants were trained under identical conditions; test set 𝑛 = 199. (A) Validation loss trajectories: transfer learning achieves consistently lower loss from the first epoch. (B) Validation R 2 progression: transfer exceeds 0.95 by epoch 600, approximately 130 epochs earlier than random initialization. (C) Parity plots (log space): transfer exhibits the tightest 1:1 clustering; all models show unbiased predictions. (D) Multi-metric comparison confirming transfer superiority across RMSE, MAE, and MaxAE. (E) Convergence speed: transfer reaches R 2 ≥ 0.90 at epoch 540 vs. epoch 670 for random-random (19.4% reduction). (F) Residual distributions: all models are unbiased, but transfer yields the narrowest spread. The ensemble (10 models, 10× cost) is statistically indistinguishable from a single random-random PINN (𝑝 = 0.815, Cohen’s 𝑑 = −0.02), confirming that physics constraints eliminate the functional diversity that ensemble-based uncertainty requires.",
+      "page": 30,
+      "index": 4,
+      "width": 915,
+      "height": 630
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-005.webp",
+      "caption": "Figure 3: Robust scaling and log-transformation satisfy the statistical assumptions of the heteroscedastic data loss. (A–C) Robust scaling (median/IQR normalization) mitigates the influence of geological outliers while preserving distribution shape, ensuring numerical stability for heavy-tailed geochemical data. (D) The raw adsorption target is strongly right-skewed (skewness= 1.15). (E–F) The log-transformation ?̃? = log(𝑦 + 1) reduces skewness to near-zero and stabilizes variance across the three-order-of-magnitude adsorption range, directly justifying the Gaussian likelihood assumption in ℒdata and preventing the loss function from being dominated by high-capacity outliers.",
+      "page": 22,
+      "index": 5,
+      "width": 910,
+      "height": 592
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-006.webp",
+      "caption": "Figure 11: SHAP attribution confirms that engineered compositional and thermodynamic features dominate predictions, with moisture–volatile interaction as the leading control on methane sorption capacity. (A) Global feature importance (mean |𝜙|); top five features account for 61.9% of total attribution, with 4 of 5 being engineered features, directly validating the physics-informed feature engineering strategy. (B) Beeswarm summary plot colored by normalized feature value; pressure is predominantly positive (62.8%) while moisture–VM interaction is bidirectional, reflecting rank-dependent context. (C–D) Dependence plots for moisture–VM interaction and fixed carbon show non-monotonic relationships with substantial scatter, confirming that linear models cannot capture these compositional effects. (E) Pairwise SHAP interaction heatmap; five pairs exceed 𝜌SHAP > 0.5, including pressure–𝑃 × 𝑇 (𝜌SHAP = 0.93), confirming internalization of coupled thermodynamic state variables. (F) Waterfall plot for a representative high-capacity anthracite sample, illustrating the additive decomposition of individual feature contributions from the base value to the final prediction.",
+      "page": 35,
+      "index": 6,
+      "width": 860,
+      "height": 1064
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-007.webp",
+      "caption": "Table 1: Statistical characteristics of the methane sorption dataset (993 measurements from 114 experiments). The dataset captures the full range of coal ranks under reservoir-relevant thermodynamic conditions. All temperatures are reported in Kelvin.",
+      "page": 18,
+      "index": 7,
+      "width": 946,
+      "height": 223
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-008.webp",
+      "caption": "Table 2: Coal rank classification and experimental methodology distribution. Coal types categorized by volatile matter content (Vdaf, dry ash-free basis).",
+      "page": 18,
+      "index": 8,
+      "width": 1006,
+      "height": 197
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-009.webp",
+      "caption": "Figure 4: Classical pressure-only isotherms reach a universal performance ceiling of R2 ≈ 0.29, quantifying the dominant contribution of compositional heterogeneity to sorption variability. Actual vs. predicted values on training and 20% held-out test sets; dashed line: perfect prediction (𝑦 = 𝑥). (A) Langmuir (𝑅2 = 0.254). (B) Freundlich (𝑅2 = 0.247). (C) Sips (𝑅2 = 0.252). (D) Three-model ensemble average (𝑅2 = 0.285). All models explain only 25–28% of variance despite encoding correct thermodynamic pressure-adsorption structure, and the large uniform prediction scatter persists across the full pressure range. This ceiling is not a failure of classical isotherm theory but a quantitative demonstration that compositional heterogeneity—not pressure-adsorption physics—is the dominant source of sorption uncertainty in heterogeneous coal datasets, establishing the performance target that multivariate PINN modeling must surpass.",
+      "page": 23,
+      "index": 9,
+      "width": 910,
+      "height": 746
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-010.webp",
+      "caption": "Figure 12: ALE causal effect analysis confirms non-monotonic feature effects and corroborates SHAP rankings, with 11 of 12 features exhibiting physically interpretable threshold behavior. (A) Global ranking by ALE effect range; moisture–VM interaction leads (1.24 units), consistent with SHAP attribution, validating its role as the primary sorption control. (B) SHAP–ALE rank correlation 𝜌𝑠 = 0.45 (𝑝 < 0.05); the moderate agreement reflects expected divergence driven by multicollinearity (six features with VIF> 5) rather than model inconsistency—low-VIF features achieve near-perfect rank agreement (Δrank ≤ 1). (C–F) ALE curves for the top four features with ±1 s.e. shading and sample density histograms: moisture–VM interaction shows pronounced negative effects at high values (pore blocking); fixed carbon displays non-monotonic behavior reflecting competing microporosity and connectivity effects; pressure follows smooth Langmuir-type saturation; temperature exhibits a U-shaped curve (enhancement at 20–30 ◦ C via micropore activation, reduction at 30–50 ◦ C via thermodynamic penalty) that resolves its near-zero Pearson correlation and validates the engineered thermal features.",
+      "page": 36,
+      "index": 10,
+      "width": 861,
+      "height": 1035
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-011.webp",
+      "caption": "Table 3: Pearson correlations between input features and methane adsorption capacity. Significant correlations (𝑝 < 0.05) shown in bold.",
+      "page": 19,
+      "index": 11,
+      "width": 937,
+      "height": 229
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-012.webp",
+      "caption": "Figure 8: Residual diagnostics confirm homoscedasticity, approximate normality, and absence of systematic prediction bias across the full adsorption range. Analysis of 𝑛 = 199 held-out test residuals in log-transformed space. (A) Residuals vs. predicted values: random scatter around zero with constant variance; ±2𝜎 bounds (𝜎 = 0.153) contain 95.5% of points, confirming well-calibrated spread. (B) Residual histogram with fitted Gaussian (black dashed); Shapiro–Wilk 𝑝 = 0.064, failing to reject normality at 𝛼 = 0.05. (C) Q–Q plot: strong linearity in the central 90%, with minor heavy tails at extremes attributable to high-moisture low-rank coals at the edges of the training distribution. (D) Residuals vs. true values: no systematic trend, confirming prediction errors are independent of adsorption magnitude. (E) Symmetric cumulative residual distribution confirms the absence of subpopulation biases. (F) Flat scale-location trend confirms that log transformation successfully achieved homoscedasticity, validating the Gaussian likelihood assumption throughout the full adsorption range.",
+      "page": 27,
+      "index": 12,
+      "width": 911,
+      "height": 617
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-013.webp",
+      "caption": "Figure 5: Within-rank stratification progressively improves isotherm performance, confirming that compositional heterogeneity between strata—not thermodynamic model limitations—drives the global performance ceiling. Langmuir fits stratified by volatile matter content. (A) Maximum adsorption capacity 𝑞max increases monotonically with coal rank: high-rank 26.35 m 3 /t, medium-rank 22.08 m 3 /t, low-rank 17.16 m 3 /t, consistent with rank-controlled micropore development. (B) Within-rank R 2 : high-rank 0.289 (+14%), medium-rank 0.371 (+46%), low-rank 0.487 (+91%) versus the global R 2 = 0.254. The monotonic improvement with compositional homogeneity confirms compositional heterogeneity as the primary driver of low global performance. Yet even within narrow strata, 51–71% of variance remains unexplained, demonstrating that volatile matter alone cannot substitute for full multivariate characterization. (C) Sample distribution: high-rank 47%, medium-rank 36%, low-rank 16%.",
+      "page": 24,
+      "index": 13,
+      "width": 911,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-014.webp",
+      "caption": "Figure 10: Aleatoric uncertainty dominates (98.3%) and calibrated total uncertainty reliably identifies high-error predictions (𝜌𝑠 = 0.708). Analysis on held-out test set (𝑛 = 199); 100 stochastic MC Dropout forward passes. (A) Stacked epistemic and aleatoric uncertainty contributions sorted by true adsorption capacity; aleatoric dominates throughout the full capacity range. (B) Mean decomposition: epistemic ∼1.7%, aleatoric ∼98.3%; the low epistemic fraction reflects physical constraint of the solution space, not model inadequacy. (C) Total predicted uncertainty vs. true capacity, colored by absolute prediction error; higher uncertainty aligns with larger errors. (D) Per-sample epistemic vs. aleatoric uncertainty, colored by error magnitude; epistemic and aleatoric components carry complementary information. (E–F) Marginal distributions of epistemic and aleatoric uncertainties. (G–I) Absolute prediction error vs. epistemic (G, 𝜌𝑠 = 0.38), aleatoric (H, 𝜌𝑠 = 0.61), and total uncertainty (I, 𝜌𝑠 = 0.708); the strong total-uncertainty correlation confirms that joint propagation of both components (Section 2.9.3) is essential for practically useful uncertainty estimates.",
+      "page": 31,
+      "index": 14,
+      "width": 911,
+      "height": 733
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13992v1/fig-015.webp",
+      "caption": "Figure 1: Pairwise relationships reveal nonlinear compositional controls on methane adsorption capacity.",
+      "page": 20,
+      "index": 15,
+      "width": 960,
+      "height": 960
+    }
+  ]
+}

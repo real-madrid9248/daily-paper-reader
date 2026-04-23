@@ -1,6 +1,12 @@
 {
-  "generated_at": "2026-03-06T19:11:18.471356+00:00",
-  "updated_date": "20260306",
+  "generated_at": "2026-04-23T07:28:48.671339+00:00",
+  "updated_date": "20260414-20260423",
   "carryover_days": 9,
-  "items": []
+  "tag_states": {
+    "盐穴储氢": {
+      "updated_date": "20260414-20260423",
+      "carryover_days": 9,
+      "items": []
+    }
+  }
 }
